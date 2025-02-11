@@ -1,0 +1,231 @@
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\appsettings.Development.json
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\appsettings.json
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\WebApp.exe
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\WebApp.deps.json
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\WebApp.runtimeconfig.json
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\WebApp.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\WebApp.pdb
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\AutoMapper.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Azure.Core.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Azure.Identity.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\FluentValidation.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\FluentValidation.AspNetCore.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\FluentValidation.DependencyInjectionExtensions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\MailKit.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Bcl.Memory.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Bcl.TimeProvider.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Data.SqlClient.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Identity.Stores.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.ObjectPool.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Primitives.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.WebEncoders.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Identity.Client.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Abstractions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Logging.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.OpenApi.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.SqlServer.Server.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\MimeKit.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Configuration.ConfigurationManager.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Drawing.Common.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Formats.Asn1.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Memory.Data.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Runtime.Caching.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Cryptography.Pkcs.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Cryptography.ProtectedData.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Cryptography.Xml.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Permissions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Text.Encoding.CodePages.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Text.Encodings.Web.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\System.Windows.Extensions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Security.Cryptography.Pkcs.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Text.Encoding.CodePages.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\browser\lib\net7.0\System.Text.Encodings.Web.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Core.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Identity.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Infrastructure.dll
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Identity.pdb
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Core.pdb
+D:\Тестовое задание\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Infrastructure.pdb
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.csproj.AssemblyReference.cache
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.AssemblyInfoInputs.cache
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.AssemblyInfo.cs
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.csproj.CoreCompileInputs.cache
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.MvcApplicationPartsAssemblyInfo.cs
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.MvcApplicationPartsAssemblyInfo.cache
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.WebApp.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.build.WebApp.props
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.WebApp.props
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.WebApp.props
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets.pack.json
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets.build.json
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets.development.json
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\scopedcss\bundle\WebApp.styles.css
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.csproj.CopyComplete
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.dll
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\refint\WebApp.dll
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.pdb
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\WebApp.genruntimeconfig.cache
+D:\Тестовое задание\ProEvent\WebApp\obj\Debug\net7.0\ref\WebApp.dll
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.csproj.AssemblyReference.cache
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.AssemblyInfoInputs.cache
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.AssemblyInfo.cs
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.csproj.CoreCompileInputs.cache
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.MvcApplicationPartsAssemblyInfo.cs
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.MvcApplicationPartsAssemblyInfo.cache
+D:\ProEvent\WebApp\bin\Debug\net7.0\appsettings.Development.json
+D:\ProEvent\WebApp\bin\Debug\net7.0\appsettings.json
+D:\ProEvent\WebApp\bin\Debug\net7.0\WebApp.exe
+D:\ProEvent\WebApp\bin\Debug\net7.0\WebApp.deps.json
+D:\ProEvent\WebApp\bin\Debug\net7.0\WebApp.runtimeconfig.json
+D:\ProEvent\WebApp\bin\Debug\net7.0\WebApp.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\WebApp.pdb
+D:\ProEvent\WebApp\bin\Debug\net7.0\AutoMapper.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Azure.Core.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Azure.Identity.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\FluentValidation.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\FluentValidation.AspNetCore.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\FluentValidation.DependencyInjectionExtensions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\MailKit.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Bcl.Memory.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Bcl.TimeProvider.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Data.SqlClient.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Identity.Stores.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.ObjectPool.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.Primitives.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.WebEncoders.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Identity.Client.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Abstractions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Logging.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.OpenApi.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.SqlServer.Server.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\MimeKit.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Configuration.ConfigurationManager.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Diagnostics.DiagnosticSource.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Drawing.Common.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Formats.Asn1.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Memory.Data.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Runtime.Caching.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Cryptography.Pkcs.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Cryptography.ProtectedData.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Cryptography.Xml.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Security.Permissions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Text.Encoding.CodePages.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Text.Encodings.Web.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.Windows.Extensions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Security.Cryptography.Pkcs.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Text.Encoding.CodePages.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\browser\lib\net7.0\System.Text.Encodings.Web.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Core.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Identity.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Infrastructure.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Core.pdb
+D:\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Identity.pdb
+D:\ProEvent\WebApp\bin\Debug\net7.0\ProEvent.Services.Infrastructure.pdb
+D:\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.WebApp.Microsoft.AspNetCore.StaticWebAssets.props
+D:\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.build.WebApp.props
+D:\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.WebApp.props
+D:\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.WebApp.props
+D:\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets.pack.json
+D:\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets.build.json
+D:\ProEvent\WebApp\obj\Debug\net7.0\staticwebassets.development.json
+D:\ProEvent\WebApp\obj\Debug\net7.0\scopedcss\bundle\WebApp.styles.css
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.csproj.CopyComplete
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.dll
+D:\ProEvent\WebApp\obj\Debug\net7.0\refint\WebApp.dll
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.pdb
+D:\ProEvent\WebApp\obj\Debug\net7.0\WebApp.genruntimeconfig.cache
+D:\ProEvent\WebApp\obj\Debug\net7.0\ref\WebApp.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Humanizer.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\Mono.TextTemplating.dll
+D:\ProEvent\WebApp\bin\Debug\net7.0\System.CodeDom.dll

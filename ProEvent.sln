@@ -1,0 +1,87 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{72AE07F0-21CB-4D03-A491-FE920E1EEF89}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProEvent.Services.Core", "ProEvent.Services.Core\ProEvent.Services.Core.csproj", "{284876B0-36C7-467A-B07A-40336AEE6F0E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProEvent.Services.Infrastructure", "ProEvent.Services.Infrastructure\ProEvent.Services.Infrastructure.csproj", "{A7B87032-3F8A-41A2-861D-249B0334958C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{F57E7506-D3BF-402D-93EC-E79783E137A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FEADC456-85F4-4EF1-A39D-F51125F15BBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProEvent.Tests.Events", "ProEvent.Tests.Event\ProEvent.Tests.Events.csproj", "{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Frontend", "Frontend\", "{1F44C301-D2BD-4190-9C70-325D49F52AA9}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.VirtualPath = "/localhost_62114"
+		Debug.AspNetCompiler.PhysicalPath = "Frontend\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62114\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_62114"
+		Release.AspNetCompiler.PhysicalPath = "Frontend\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62114\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "62114"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{2A21AB6C-FA9C-4C17-86BB-F0526FE9A53A}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProEvent.Services.Identity", "ProEvent.Services.Identity\ProEvent.Services.Identity.csproj", "{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{284876B0-36C7-467A-B07A-40336AEE6F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{284876B0-36C7-467A-B07A-40336AEE6F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{284876B0-36C7-467A-B07A-40336AEE6F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{284876B0-36C7-467A-B07A-40336AEE6F0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7B87032-3F8A-41A2-861D-249B0334958C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7B87032-3F8A-41A2-861D-249B0334958C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7B87032-3F8A-41A2-861D-249B0334958C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7B87032-3F8A-41A2-861D-249B0334958C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F57E7506-D3BF-402D-93EC-E79783E137A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F57E7506-D3BF-402D-93EC-E79783E137A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F57E7506-D3BF-402D-93EC-E79783E137A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F57E7506-D3BF-402D-93EC-E79783E137A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{284876B0-36C7-467A-B07A-40336AEE6F0E} = {72AE07F0-21CB-4D03-A491-FE920E1EEF89}
+		{A7B87032-3F8A-41A2-861D-249B0334958C} = {72AE07F0-21CB-4D03-A491-FE920E1EEF89}
+		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED} = {FEADC456-85F4-4EF1-A39D-F51125F15BBD}
+		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87} = {72AE07F0-21CB-4D03-A491-FE920E1EEF89}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9ECE31E6-EDA4-449E-9697-EEA42B555F8F}
+	EndGlobalSection
+EndGlobal

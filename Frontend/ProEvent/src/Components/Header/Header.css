@@ -1,0 +1,21 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    height: fit-content;
+    overflow: hidden;
+    background-color: #fff;
+    padding: 0 5%;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(159, 162, 177, 0.136);
+}
+.logo{
+    width: 100px;
+}
+.nav {display: inline-flex;}
+
+.nav-indicator {position: absolute;left: 0;bottom: 0;height: 4px;transition: .4s;height: 5px;z-index: 1;border-radius: 8px 8px 0 0;}
+@media (max-width: 580px) {
+    .nav { overflow: auto; }}
