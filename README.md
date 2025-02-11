@@ -15,13 +15,13 @@
 1.  Клонируйте репозиторий:
 
     ```bash
-    git clone (https://github.com/S-Allina/ProEvents.git)
+    git clone https://github.com/S-Allina/ProEvents.git
     ```
 
 2.  Перейдите в директорию проекта:
 
     ```bash
-    cd ProEvent
+    cd ProEvents
     ```
 
 3.  Запустите приложение с помощью Docker Compose:
