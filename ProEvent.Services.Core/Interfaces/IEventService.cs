@@ -7,6 +7,10 @@ namespace ProEvent.Services.Core.Interfaces
     {
         Task<bool> CanParticipantAttendEvent(int participantId, DateTime eventDate, int eventId);
         Task<EventDTO> GetEventById(int id);
+        Task<EventDTO> CreateUpdateEvent(EventDTO eventDTO);
+        Task<bool> DeleteEvent(int id);
+
+
         //Task<bool> IsParticipantEnrolled(int eventId, int participantId);
     }
 }

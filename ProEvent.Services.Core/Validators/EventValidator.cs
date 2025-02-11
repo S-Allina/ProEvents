@@ -27,11 +27,8 @@ namespace ProEvent.Services.Core.Validators
                 .MaximumLength(50).WithMessage("Категория события не должна превышать 50 символов.");
 
             RuleFor(e => e.MaxParticipants)
-                .GreaterThan(0).WithMessage("Максимальное количество участников должно быть больше 0.");
-            RuleFor(e => e.MaxParticipants)
-                       .GreaterThan(0).WithMessage("Максимальное количество участников должно быть больше 0.")
-                       .LessThanOrEqualTo(3000).WithMessage("Максимальное количество участников не должно превышать 3000."); // New rule!
-
+      .GreaterThan(0).WithMessage("Максимальное количество участников должно быть больше 0.")
+      .LessThanOrEqualTo(3000).WithMessage("Максимальное количество участников не должно превышать 3000.");
         }
     }
 }

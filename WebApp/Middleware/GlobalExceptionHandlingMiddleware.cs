@@ -30,12 +30,18 @@ namespace WebApp.Middleware
         {
             HttpStatusCode status;
             string message;
+            List<string?> errors = null;
 
             switch (exception)
             {
+                case ProEvent.Services.Core.Exceptions.ValidationException validationException:
+                    status = HttpStatusCode.BadRequest;
+                    message = "Validation error.";
+                    errors = validationException.Errors;
+                    break;
                 case ArgumentException argumentException:
                     status = HttpStatusCode.BadRequest;
-                    message = "Invalid request data."; // Общее сообщение для клиента
+                    message = "Invalid request data.";
                     break;
                 case UnauthorizedAccessException unauthorizedAccessException:
                     status = HttpStatusCode.Unauthorized;
@@ -43,11 +49,11 @@ namespace WebApp.Middleware
                     break;
                 default:
                     status = HttpStatusCode.InternalServerError;
-                    message = exception.Message; // Общее сообщение для клиента
+                    message = "An unexpected error occurred.";
                     break;
             }
 
-            _logger.LogError(exception, "An exception occurred: {Message}", exception.Message); // Логируем полное исключение
+            _logger.LogError(exception, "An exception occurred: {Message}", exception.Message);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;
@@ -55,7 +61,7 @@ namespace WebApp.Middleware
             var errorResponse = new
             {
                 message = message,
-                // Дополнительные детали, которые можно вернуть (например, requestId)
+                errors = errors
             };
 
             var json = JsonSerializer.Serialize(errorResponse);

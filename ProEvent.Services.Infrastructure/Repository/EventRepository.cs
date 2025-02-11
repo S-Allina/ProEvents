@@ -32,23 +32,16 @@ namespace ProEvent.Services.Infrastructure.Repository
 
         public async Task<EventDTO> CreateUpdateEvent(EventDTO eventDTO)
         {
-            // Validation at the VERY beginning
-           
-
             Event existingEvent = null;
 
             if (eventDTO.Id != 0)
             {
-                // Try to fetch the existing event from the database
                 existingEvent = await _db.Events.FindAsync(eventDTO.Id);
 
                 if (existingEvent == null)
                 {
-                    // Handle the case where the event with the given ID doesn't exist
                     throw new ArgumentException($"Event with ID {eventDTO.Id} not found.");
                 }
-
-                // Apply changes only for non-null/non-empty values from eventDTO
                 if (!string.IsNullOrEmpty(eventDTO.Name))
                 {
                     existingEvent.Name = eventDTO.Name;
@@ -65,17 +58,17 @@ namespace ProEvent.Services.Infrastructure.Repository
                 {
                     existingEvent.Category = eventDTO.Category;
                 }
-                if (eventDTO.Date != default(DateTime)) // Check for default DateTime value
+                if (eventDTO.Date != default(DateTime))
                 {
                     existingEvent.Date = eventDTO.Date;
                 }
 
-                if (eventDTO.Image != null) // Check if Image is not null
+                if (eventDTO.Image != null)
                 {
                     existingEvent.Image = eventDTO.Image;
                 }
 
-                if (eventDTO.MaxParticipants != 0) // Check if MaxParticipants is not the default value
+                if (eventDTO.MaxParticipants != 0)
                 {
                     existingEvent.MaxParticipants = eventDTO.MaxParticipants;
                 }
@@ -84,24 +77,21 @@ namespace ProEvent.Services.Infrastructure.Repository
             {
                 existingEvent = _mapper.Map<EventDTO, Event>(eventDTO);
 
-                var validationResult = await _eventValidator.ValidateAsync(existingEvent); //validate DTO
+                var validationResult = await _eventValidator.ValidateAsync(existingEvent);
 
                 if (!validationResult.IsValid)
                 {
                     var errors = validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-                    throw new ValidationException(string.Join(Environment.NewLine, errors)); // Throw exception with all errors.  Much better!
+                    throw new ValidationException(string.Join(Environment.NewLine, errors));
                 }
-                // Create a new event using the values from eventDTO
-                _db.Events.Add(existingEvent); // Add new Event
+                _db.Events.Add(existingEvent);
             }
-          
+
             await _db.SaveChangesAsync();
 
-            // Invalidate the cache after updating the event
             string cacheKey = $"{EventImageCacheKeyPrefix}{existingEvent.Id}";
             _cache.Remove(cacheKey);
 
-            // Return the updated/created event DTO
             return _mapper.Map<Event, EventDTO>(existingEvent);
         }
         public async Task<bool> DeleteEvent(int id)
@@ -161,9 +151,9 @@ namespace ProEvent.Services.Infrastructure.Repository
                     });
                 }
             }
-            
-                return eventDtos.Where(e => e.Status != EventStatus.Passed);
-            
+
+            return eventDtos.Where(e => e.Status != EventStatus.Passed);
+
         }
         public async Task<IEnumerable<EventDTO>> GetFilteredEvents(DateTime? startDate, DateTime? endDate, string location, string category)
         {
@@ -191,7 +181,7 @@ namespace ProEvent.Services.Infrastructure.Repository
             for (int i = 0; i < eventDtos.Count; i++)
             {
                 var eventDto = eventDtos[i];
-                var eventItem = events[i]; // Get the corresponding Event object
+                var eventItem = events[i];
 
                 int enrollmentCount = await _db.Enrollments.CountAsync(e => e.EventId == eventDto.Id);
                 eventDto.Status = await CalculateEventStatus(eventItem);
@@ -217,7 +207,7 @@ namespace ProEvent.Services.Infrastructure.Repository
             {
                 return eventDtos.Where(e => e.Status != EventStatus.Passed);
             }
-             
+
         }
         public async Task<(IEnumerable<EventDTO> Events, int TotalCount)> GetEvents(int pageNumber = 1, int pageSize = 4)
         {
@@ -259,7 +249,6 @@ namespace ProEvent.Services.Infrastructure.Repository
 
             return (pagedEvents, eventDtos.Count); // Return paged events and total count after filtering
         }
-
         public async Task<EventStatus> CalculateEventStatus(Event events)
         {
             int enrollmentCount = await _db.Enrollments.CountAsync(e => e.EventId == events.Id);
@@ -314,7 +303,6 @@ namespace ProEvent.Services.Infrastructure.Repository
 
             foreach (var registrationDto in eventRegistrations)
             {
-                // Get the Event object
                 var theEvent = await _db.Events.FirstOrDefaultAsync(eventItem => eventItem.Name == registrationDto.Name);
                 if (theEvent.Image != null)
                 {
@@ -330,18 +318,12 @@ namespace ProEvent.Services.Infrastructure.Repository
                 }
                 if (theEvent != null)
                 {
-                    //Determine the status
                     int enrollmentCount = await _db.Enrollments.CountAsync(e => e.EventId == theEvent.Id);
                     registrationDto.Status = await CalculateEventStatus(theEvent);
-
-                    // Load image from cache (if available)
-
-
                 }
                 else
                 {
-                    // Handle the case where the Event is not found
-                    registrationDto.Status = EventStatus.Passed; // Or some other default status
+                    registrationDto.Status = EventStatus.Passed;
                 }
             }
 

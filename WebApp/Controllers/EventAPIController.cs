@@ -16,15 +16,15 @@ namespace ProEvent.WebApp.Controllers
     {
         protected ResponseDTO _response;
         private IEventRepository _eventRepository;
- 
+        private readonly ILogger<eventAPIController> _logger;
         private IEventService _eventService;
 
-        public eventAPIController(IEventRepository eventRepository, ResponseDTO response,  IEventService eventService)
+        public eventAPIController(IEventRepository eventRepository, ResponseDTO response, ILogger<eventAPIController> logger, IEventService eventService)
         {
             _eventRepository = eventRepository;
             this._response = new ResponseDTO();
-           
-            _eventService= eventService;
+            _logger = logger;
+            _eventService = eventService;
         }
 
         [HttpGet]
@@ -75,13 +75,14 @@ namespace ProEvent.WebApp.Controllers
             }
             return _response;
         }
-       
+
         [HttpGet("filtered")]
         public async Task<object> GetFilteredEvents(DateTime? startDate, DateTime? endDate, string? location, string? category)
         {
-            try { 
-            IEnumerable<EventDTO> eventDTOs = await _eventRepository.GetFilteredEvents(startDate, endDate, location, category);
-            _response.Result = eventDTOs;
+            try
+            {
+                IEnumerable<EventDTO> eventDTOs = await _eventRepository.GetFilteredEvents(startDate, endDate, location, category);
+                _response.Result = eventDTOs;
             }
             catch (Exception ex)
             {
@@ -92,7 +93,7 @@ namespace ProEvent.WebApp.Controllers
         }
         [HttpGet("search")]
         public async Task<object> GetEventsByName(string name)
-    {
+        {
             try
             {
                 IEnumerable<EventDTO> eventDTOs = await _eventRepository.GetEventByName(name);
@@ -106,50 +107,95 @@ namespace ProEvent.WebApp.Controllers
             return _response;
         }
         [HttpPost]
-        public async Task<object> Post([FromBody] EventDTO eventDTO)
+        public async Task<IActionResult> Post([FromBody] EventDTO eventDTO)
         {
             try
             {
-                EventDTO model = await _eventRepository.CreateUpdateEvent(eventDTO);
+                EventDTO model = await _eventService.CreateUpdateEvent(eventDTO);
                 _response.Result = model;
+                _response.DisplayMessage = "Операция прошла успешно.";
+                _response.IsSuccess = true;
+                return Ok(_response);
+            }
+            catch (ProEvent.Services.Core.Exceptions.ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Введены не корректные данные.");
+                _response.IsSuccess = false;
+                _response.DisplayMessage = "Ошибка валидации.";
+                _response.ErrorMessages = ex.Errors;
+                return BadRequest(_response);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while creating/updating event.");
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
+                _response.DisplayMessage = "Error creating/updating event.";
+                _response.ErrorMessages = new List<string?> { ex.Message };
+                return StatusCode(500, _response);
             }
-            return _response;
         }
         [HttpPut]
-        public async Task<object> Put([FromBody] EventDTO eventDTO)
+        public async Task<IActionResult> Put([FromBody] EventDTO eventDTO)
         {
             try
             {
-                EventDTO model = await _eventRepository.CreateUpdateEvent(eventDTO);
+                EventDTO model = await _eventService.CreateUpdateEvent(eventDTO);
                 _response.Result = model;
+                _response.DisplayMessage = "Обновление прошло успешно.";
+                _response.IsSuccess = true;
+                return Ok(_response);
+            }
+            catch (ProEvent.Services.Core.Exceptions.ValidationException ex)
+            {
+                _response.IsSuccess = false;
+                _response.DisplayMessage = "Введены некорректные данные.";
+                _response.ErrorMessages = ex.Errors;
+                return BadRequest(_response);
+            }
+            catch (ArgumentException ex)
+            {
+                _response.IsSuccess = false;
+                _response.DisplayMessage = "Событие не найдено";
+                _response.ErrorMessages = new List<string?> { ex.Message };
+                return NotFound(_response);
             }
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
+                _response.DisplayMessage = "Ошибка обновления события";
+                _response.ErrorMessages = new List<string?> { ex.Message };
+                return StatusCode(500, _response);
             }
-            return _response;
         }
         [HttpDelete]
         [Route("{id}")]
-        public async Task<object> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                bool isSuccess = await _eventRepository.DeleteEvent(id);
-                _response.Result = isSuccess;
+                bool isSuccess = await _eventService.DeleteEvent(id);
+                if (isSuccess)
+                {
+                    _response.Result = true;
+                    _response.DisplayMessage = "Удаление прошло успешно";
+                    _response.IsSuccess = true;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.IsSuccess = false;
+                    _response.DisplayMessage = "Событие не найдено.";
+                    _response.ErrorMessages = new List<string?> { "Событие не найдено." };
+                    return NotFound(_response);
+                }
             }
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
+                _response.DisplayMessage = "Не удалось удалить событие.";
+                _response.ErrorMessages = new List<string?> { ex.Message };
+                return StatusCode(500, _response);
             }
-            return _response;
         }
     }
 }

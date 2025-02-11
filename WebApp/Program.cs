@@ -13,7 +13,6 @@ using System.Text.Json.Serialization;
 using ProEvents.Service.Core.DTOs;
 using ProEvent.Services.Core.Repository;
 using ProEvent.Services.Core.Interfaces;
-using ProEvent.Services.Core.Services;
 using ProEvent.Services.Core.Validators;
 using ProEvent.Services.Core.Models;
 using ProEvent.Services.Identity.Interfeces;
@@ -21,6 +20,7 @@ using ProEvent.Services.Identity.Services;
 using ProEvent.Services.Infrastructure.Data;
 using ProEvent.Services.Infrastructure.Repository;
 using ProEvent.Services.Infrastructure;
+using ProEvent.Services.Infrastructure.Services;
 
 namespace WebApp
 {
