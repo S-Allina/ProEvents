@@ -1,6 +1,5 @@
-﻿
-
-using ProEvent.Services.Core.Interfaces;
+﻿using ProEvent.Services.Core.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace ProEvent.Services.Core.DTOs
 {
@@ -20,11 +19,11 @@ namespace ProEvent.Services.Core.DTOs
 
         public int MaxParticipants { get; set; }
 
-        public byte[]? Image { get; set; } // Для хранения изображения в базе данных (BLOB)
-
+        public byte[]? Image { get; set; }
+        [JsonIgnore]
         public EventStatus? Status { get; set; }
 
-        public EventDTO() { } // Необходимый конструктор без параметров для EF Core
+        public EventDTO() { } 
 
         public EventDTO(string name, string description, byte[]? image, DateTime date, string location, string category, int maxParticipants)
         {

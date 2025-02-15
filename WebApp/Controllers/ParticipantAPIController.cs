@@ -18,13 +18,11 @@ namespace ProEvent.WebApp.Controllers
     {
         protected ResponseDTO _response;
         private IParticipantRepository _participantRepository;
-        private readonly IValidator<Participant> _participantValidator;
 
-        public ParticipantAPIController(IParticipantRepository participantRepository, ResponseDTO response, IValidator<Participant> participantValidator)
+        public ParticipantAPIController(IParticipantRepository participantRepository, ResponseDTO response)
         {
             _participantRepository = participantRepository;
             this._response = new ResponseDTO();
-            _participantValidator = participantValidator;
         }
 
         [HttpGet]

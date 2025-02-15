@@ -15,12 +15,11 @@ namespace ProEvent.Services.Core.Models
 
             public DateTime DateOfBirth { get; set; }
 
-
             public string Email { get; set; }
 
-            public string UserId { get; set; } // Foreign key to AspNetUsers
+            public string UserId { get; set; }
 
-            public ApplicationUser User { get; set; } // Навигационное свойство
+            public ApplicationUser User { get; set; } 
 
             public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
         }

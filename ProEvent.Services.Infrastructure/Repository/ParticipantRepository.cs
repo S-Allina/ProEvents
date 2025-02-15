@@ -14,7 +14,7 @@ namespace ProEvent.Services.Infrastructure.Repository
         private readonly ApplicationDbContext _db;
         private IMapper _mapper;
         private readonly IValidator<Participant> _participantValidator;
-        public ParticipantRepository(ApplicationDbContext db, IMapper mapper, IValidator<Participant> participantValidator) 
+        public ParticipantRepository(ApplicationDbContext db, IMapper mapper, IValidator<Participant> participantValidator)
         {
             _db = db;
             _mapper = mapper;
@@ -27,43 +27,41 @@ namespace ProEvent.Services.Infrastructure.Repository
             Participant participants = _mapper.Map<ParticipantDTO, Participant>(participantDTO);
             var validationResult = await _participantValidator.ValidateAsync(participants);
 
-    if (!validationResult.IsValid)
-    {
-        var errors = validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-        throw new ValidationException(string.Join(Environment.NewLine, errors));
-    }
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
+                throw new ValidationException(string.Join(Environment.NewLine, errors));
+            }
 
-    Participant participant = _mapper.Map<ParticipantDTO, Participant>(participantDTO);
+            Participant participant = _mapper.Map<ParticipantDTO, Participant>(participantDTO);
 
-    //2. Valdiate Entity
-    var entityValidationResult = await _participantValidator.ValidateAsync(participant);
-    if (!entityValidationResult.IsValid)
-    {
-        var errors = entityValidationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-        throw new ValidationException(string.Join(Environment.NewLine, errors));
-    }
+            var entityValidationResult = await _participantValidator.ValidateAsync(participant);
+            if (!entityValidationResult.IsValid)
+            {
+                var errors = entityValidationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
+                throw new ValidationException(string.Join(Environment.NewLine, errors));
+            }
 
-    if (participant.Id != 0)
-    {
-        // Ensure the participant exists before attempting to update
+            if (participant.Id != 0)
+            {
 
-        var existingParticipant = await _db.Participants.FindAsync(participant.Id);
-        if (existingParticipant == null)
-        {
-            throw new ArgumentException($"Participant with ID {participant.Id} not found.");
+                var existingParticipant = await _db.Participants.FindAsync(participant.Id);
+                if (existingParticipant == null)
+                {
+                    throw new ArgumentException($"Participant with ID {participant.Id} not found.");
+                }
+                _db.Participants.Update(participant);
+            }
+            else
+            {
+
+                _db.Participants.Add(participant);
+            }
+
+            await _db.SaveChangesAsync();
+
+            return _mapper.Map<Participant, ParticipantDTO>(participant);
         }
-        _db.Participants.Update(participant);
-    }
-    else
-    {
-
-        _db.Participants.Add(participant);
-    }
-
-    await _db.SaveChangesAsync();
-
-    return _mapper.Map<Participant, ParticipantDTO>(participant);
-}
 
         public async Task<bool> DeleteParticipant(int id)
         {
@@ -97,4 +95,5 @@ namespace ProEvent.Services.Infrastructure.Repository
             List<Participant> participants = await _db.Participants.ToListAsync();
             return _mapper.Map<List<ParticipantDTO>>(participants);
         }
-}}
+    }
+}

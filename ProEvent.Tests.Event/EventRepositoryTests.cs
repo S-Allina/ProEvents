@@ -211,10 +211,10 @@ public class EventRepositoryTests
             var repository = new EventRepository(context, _mapper, _validator, _cache);
 
             // Act
-            var result = await repository.GetFilteredEvents(DateTime.Parse("2025-02-01"), DateTime.Parse("2025-03-31"), "Location A", "Category A");
+            var result = await repository.GetEvents(1,4,DateTime.Parse("2025-02-01"), DateTime.Parse("2025-03-31"), "Location A", "Category A");
 
             // Assert
-            var eventList = result.ToList();
+            var eventList = result.Events.ToList();
             Assert.Single(eventList); // Ожидаем одно событие
             Assert.Equal("Event 1", eventList[0].Name); // Проверяем, что это именно Event 1
         }

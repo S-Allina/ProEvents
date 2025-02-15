@@ -123,132 +123,54 @@ namespace ProEvent.Services.Infrastructure.Repository
 
             return events;
         }
-        public async Task<IEnumerable<EventDTO>> GetEventByName(string name)
-        {
-            List<Event> events = await _db.Events.Where(e => e.Name.Contains(name)).ToListAsync();
-
-
-            List<EventDTO> eventDtos = _mapper.Map<List<EventDTO>>(events);
-
-            for (int i = 0; i < eventDtos.Count; i++)
-            {
-                var eventDto = eventDtos[i];
-                var eventItem = events[i]; // Get the corresponding Event object
-
-                int enrollmentCount = await _db.Enrollments.CountAsync(e => e.EventId == eventDto.Id);
-                eventDto.Status = await CalculateEventStatus(eventItem);
-
-                if (eventItem.Image != null)
-                {
-                    int eventId = eventDto.Id;
-                    string cacheKey = $"{EventImageCacheKeyPrefix}{eventId}";
-
-                    eventDto.Image = await _cache.GetOrCreateAsync(cacheKey, async entry =>
-                    {
-                        entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                        return eventItem.Image;
-                    });
-                }
-            }
-
-            return eventDtos.Where(e => e.Status != EventStatus.Passed);
-
-        }
-        public async Task<IEnumerable<EventDTO>> GetFilteredEvents(DateTime? startDate, DateTime? endDate, string location, string category)
+        public async Task<(IEnumerable<EventDTO> Events, int TotalCount)> GetEvents(
+            int pageNumber = 1,
+            int pageSize = 4,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string? location = null,
+            string? category = null,
+            string? name = null)
         {
             IQueryable<Event> query = _db.Events;
+
             if (startDate.HasValue)
             {
                 query = query.Where(e => e.Date >= startDate.Value);
             }
+
             if (endDate.HasValue)
             {
                 query = query.Where(e => e.Date <= endDate.Value);
             }
+
             if (!string.IsNullOrEmpty(location))
             {
                 query = query.Where(e => e.Location.Contains(location));
             }
+
             if (!string.IsNullOrEmpty(category))
             {
                 query = query.Where(e => e.Category.Contains(category));
             }
-            var events = await query.ToListAsync();
 
-            List<EventDTO> eventDtos = _mapper.Map<List<EventDTO>>(events);
-
-            for (int i = 0; i < eventDtos.Count; i++)
+            if (!string.IsNullOrEmpty(name))
             {
-                var eventDto = eventDtos[i];
-                var eventItem = events[i];
-
-                int enrollmentCount = await _db.Enrollments.CountAsync(e => e.EventId == eventDto.Id);
-                eventDto.Status = await CalculateEventStatus(eventItem);
-
-                if (eventItem.Image != null)
-                {
-                    int eventId = eventDto.Id;
-                    string cacheKey = $"{EventImageCacheKeyPrefix}{eventId}";
-
-                    eventDto.Image = await _cache.GetOrCreateAsync(cacheKey, async entry =>
-                    {
-                        entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                        return eventItem.Image;
-                    });
-                }
-            }
-            if (startDate.HasValue || endDate.HasValue)
-            {
-                return eventDtos;
-            }
-            else
-            {
-                return eventDtos.Where(e => e.Status != EventStatus.Passed);
+                query = query.Where(e => e.Name.Contains(name));
             }
 
+            int totalCount = await query.CountAsync();
+
+            query = query.Skip((pageNumber - 1) * pageSize)
+                         .Take(pageSize);
+
+            List<Event> events = await query.ToListAsync();
+
+            List<EventDTO> eventDTOs = _mapper.Map<List<EventDTO>>(events);
+
+            return (eventDTOs, totalCount);
         }
-        public async Task<(IEnumerable<EventDTO> Events, int TotalCount)> GetEvents(int pageNumber = 1, int pageSize = 4)
-        {
-            // 1. Get all events (for status calculation and filtering)
-            List<Event> allEvents = await _db.Events.ToListAsync();
 
-            // 2. Calculate Event Status and Filter
-            List<EventDTO> eventDtos = new List<EventDTO>();
-            foreach (var eventItem in allEvents)
-            {
-                EventStatus status = await CalculateEventStatus(eventItem);
-
-                if (status != EventStatus.Passed) // Filter out Passed events
-                {
-                    EventDTO eventDto = _mapper.Map<EventDTO>(eventItem);
-                    eventDto.Status = status;
-
-                    if (eventItem.Image != null)
-                    {
-                        int eventId = eventDto.Id;
-                        string cacheKey = $"{EventImageCacheKeyPrefix}{eventId}";
-
-                        eventDto.Image = await _cache.GetOrCreateAsync(cacheKey, async entry =>
-                        {
-                            entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                            return eventItem.Image;
-                        });
-                    }
-                    eventDtos.Add(eventDto);
-                }
-            }
-
-            // 3. Apply Pagination after filtering
-            var pagedEvents = eventDtos
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return (pagedEvents, eventDtos.Count); // Return paged events and total count after filtering
-        }
         public async Task<EventStatus> CalculateEventStatus(Event events)
         {
             int enrollmentCount = await _db.Enrollments.CountAsync(e => e.EventId == events.Id);

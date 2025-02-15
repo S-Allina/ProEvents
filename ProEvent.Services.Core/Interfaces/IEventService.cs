@@ -5,12 +5,17 @@ namespace ProEvent.Services.Core.Interfaces
 {
     public interface IEventService
     {
-        Task<bool> CanParticipantAttendEvent(int participantId, DateTime eventDate, int eventId);
         Task<EventDTO> GetEventById(int id);
         Task<EventDTO> CreateUpdateEvent(EventDTO eventDTO);
         Task<bool> DeleteEvent(int id);
+        Task<(IEnumerable<EventDTO> Events, int TotalCount)> GetEvents(
+       int pageNumber = 1,
+       int pageSize = 4,
+       DateTime? startDate = null,
+       DateTime? endDate = null,
+       string? location = null,
+       string? category = null,
+       string? name = null);
 
-
-        //Task<bool> IsParticipantEnrolled(int eventId, int participantId);
     }
 }

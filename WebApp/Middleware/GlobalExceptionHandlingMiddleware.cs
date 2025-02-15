@@ -1,8 +1,11 @@
-﻿using System.Net;
+﻿using FluentValidation;
+using ProEvent.Services.Core.Exceptions;
+using System.Net;
 using System.Text.Json;
 
 namespace WebApp.Middleware
 {
+
     public class GlobalExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
@@ -36,20 +39,32 @@ namespace WebApp.Middleware
             {
                 case ProEvent.Services.Core.Exceptions.ValidationException validationException:
                     status = HttpStatusCode.BadRequest;
-                    message = "Validation error.";
-                    errors = validationException.Errors;
+                    message = "Ошибка валидации.";
+                    errors = validationException.Errors; 
+                    break;
+
+                case FluentValidation.ValidationException fluentValidationException:
+                    status = HttpStatusCode.BadRequest;
+                    message = "Ошибка валидации.";
+                    errors = fluentValidationException.Errors.Select(e => e.ErrorMessage).ToList();
                     break;
                 case ArgumentException argumentException:
                     status = HttpStatusCode.BadRequest;
-                    message = "Invalid request data.";
+                    message = argumentException.Message;
                     break;
+
+                case KeyNotFoundException keyNotFoundException:
+                    status = HttpStatusCode.NotFound;
+                    message = keyNotFoundException.Message;
+                    break;
+
                 case UnauthorizedAccessException unauthorizedAccessException:
                     status = HttpStatusCode.Unauthorized;
                     message = exception.Message;
                     break;
                 default:
                     status = HttpStatusCode.InternalServerError;
-                    message = "An unexpected error occurred.";
+                    message = "Произошла непредвиденная ошибка.";
                     break;
             }
 

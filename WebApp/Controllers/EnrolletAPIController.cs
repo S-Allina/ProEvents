@@ -3,168 +3,83 @@ using Microsoft.AspNetCore.Mvc;
 using ProEvent.Services.Core.DTOs;
 using ProEvent.Services.Core.Interfaces;
 using ProEvent.Services.Core.Repository;
+using ProEvent.Services.Infrastructure.Repository;
+using ProEvent.Services.Infrastructure.Services;
 using ProEvents.Service.Core.DTOs;
 
 namespace ProEnrollment.WebApp.Controllers
 {
-    //[Authorize]
-    [Route("/enrollment")]
+    [Route("/enrollments")]
     public class EnrollmentAPIController : Controller
     {
         protected ResponseDTO _response;
-        private IEnrollmentRepository _enrollmentRepository;
-        private readonly IEventService _eventService;
+        private readonly IEnrollmentService _enrollmentService;
 
-        public EnrollmentAPIController(IEnrollmentRepository enrollmentRepository,IEventService eventService)
+        public EnrollmentAPIController( IEnrollmentService enrollmentService)
         {
-            _enrollmentRepository = enrollmentRepository;
-            _eventService = eventService;
             this._response = new ResponseDTO();
+            _enrollmentService= enrollmentService;
         }
-      
+
         [HttpGet]
-        public async Task<object> Get()
+        public async Task<IActionResult> GetEnrollments(int? eventId = null)
         {
-            try
-            {
-                IEnumerable<EnrollmentDTO> enrollmentDTOs = await _enrollmentRepository.GetEnrollments();
-                     _response.Result = enrollmentDTOs;
-            }
-            catch (Exception ex)
-            {
-_response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
-            return _response;
+            var enrollments = await _enrollmentService.GetEnrollmentsWithParticipantInfo(eventId);
+            _response.Result = enrollments;
+            return Ok(_response);
         }
-        [HttpGet]
-        [Route("GetByEventId/{id}")]
-        public async Task<object> GetByEventId(int id)
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEnrollmentById(int id)
         {
-            try
-            {
-                // Получаем Enrollments для указанного EventId
-                var enrollments = await _enrollmentRepository.GetEnrollmentsByEventId(id); // Предполагается, что такой метод есть в вашем репозитории
+            EnrollmentDTO enrollment = await _enrollmentService.GetEnrollmentById(id);
 
-                // Преобразуем Enrollments в ParticipantWithRegistrationDTO
-                var participantWithRegistrationDTOs = enrollments.Select(enrollment => new ParticipantWithRegistrationDTO
-                {
-                    ParticipanId = enrollment.Participant.Id,
-                    EnrollmentId= enrollment.Id,
-                    FirstName = enrollment.Participant.FirstName,
-                    LastName = enrollment.Participant.LastName,
-                    DateOfBirth = enrollment.Participant.DateOfBirth,
-                    Email = enrollment.Participant.Email,
-                    UserId = enrollment.Participant.UserId,
-                    RegistrationDate = enrollment.RegistrationDate // Получаем RegistrationDate из Enrollment
-                }).ToList();
-
-                _response.Result = participantWithRegistrationDTOs;
-            }
-            catch (Exception ex)
+            if (enrollment == null)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
+                _response.DisplayMessage = "Запись не найдена";
+                return NotFound(_response);
             }
-            return _response;
-        }
 
-        [HttpGet]
-        //[Authorize]
-        [Route("{id}")]
-        public async Task<object> GetById(int id)
-        {
-            try
-            {
-                EnrollmentDTO enrollmentDTOs = await _enrollmentRepository.GetEnrollmentById(id);
-                _response.Result = enrollmentDTOs;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
-            return _response;
+            _response.Result = enrollment;
+            return Ok(_response);
         }
-
 
 
         [HttpPost]
-        public async Task<object> Post([FromBody] EnrollmentDTO enrollmentDTO)
+        public async Task<IActionResult> Post([FromBody] EnrollmentDTO enrollmentDTO)
         {
-            try
-            {
-                var eventItem = await _eventService.GetEventById(enrollmentDTO.EventId); //Тут я надеюсь ты используешь EventService для получения EventDTO
-                if (eventItem == null)
-                {
-                    _response.IsSuccess = false;
-                    _response.DisplayMessage = "Событие не найдено";
-                    return _response;
-                }
-                DateTime eventDate = eventItem.Date;
-
-                enrollmentDTO.ParticipantId = await _enrollmentRepository.GetParticipantIdByUserId(enrollmentDTO.UserId);
-
-                if (enrollmentDTO.ParticipantId == null)
-                {
-                    _response.IsSuccess = false;
-                    _response.DisplayMessage = "Участник не найден";
-                    return _response;
-                }
-
-                bool canAttend = await _eventService.CanParticipantAttendEvent((int)enrollmentDTO.ParticipantId, eventDate, enrollmentDTO.EventId);
-
-                if (!canAttend)
-                {
-                    _response.IsSuccess = false;
-                    _response.DisplayMessage = "Ошибка, вы на это время уже зарегистрированы на другое событие";
-                    return _response;
-                }
-
-                EnrollmentDTO model = await _enrollmentRepository.CreateUpdateEnrollment(enrollmentDTO);
-                _response.Result = model;
-                _response.DisplayMessage = "Вы успешно зарегистрированы!"; // Сообщение об успехе
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.DisplayMessage = "Произошла ошибка при регистрации.";
-                _response.ErrorMessages = new List<string> { ex.Message }; // Сообщение об ошибке
-            }
-            return _response;
+            EnrollmentDTO model = await _enrollmentService.CreateUpdateEnrollment(enrollmentDTO);
+            _response.Result = model;
+            _response.DisplayMessage = "Вы успешно зарегистрированы!";
+            return CreatedAtAction(nameof(GetEnrollmentById), new { id = model.Id }, _response);
         }
         [HttpPut]
-        public async Task<object> Put([FromBody] EnrollmentDTO enrollmentDTO)
+        public async Task<IActionResult> Put([FromBody] EnrollmentDTO enrollmentDTO)
         {
-            try
-            {
-                EnrollmentDTO model = await _enrollmentRepository.CreateUpdateEnrollment(enrollmentDTO);
-                _response.Result = model;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
-            return _response;
+            EnrollmentDTO model = await _enrollmentService.CreateUpdateEnrollment(enrollmentDTO);
+            _response.Result = model;
+            _response.DisplayMessage = "Запись обновлена успешно";
+            return Ok(_response);
         }
-        [HttpDelete]
-        //[Authorize(Roles = "Admin")]
-        [Route("{id}")]
-        public async Task<object> Delete(int id)
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            try
+            bool isSuccess = await _enrollmentService.DeleteEnrollment(id);
+
+            if (isSuccess)
             {
-                bool isSuccess = await _enrollmentRepository.DeleteEnrollment(id);
-                _response.Result = isSuccess;
+                _response.Result = true;
+                _response.DisplayMessage = "Запись удалена успешно";
+                return Ok(_response);
             }
-            catch (Exception ex)
+            else
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
+                _response.DisplayMessage = "Запись не найдена.";
+                return NotFound(_response);
             }
-            return _response;
         }
     }
 }

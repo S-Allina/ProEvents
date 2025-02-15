@@ -1,4 +1,5 @@
 ﻿using ProEvent.Services.Core.Models;
+using System.Text.Json.Serialization;
 
 namespace ProEvent.Services.Core.DTOs
 {
@@ -9,7 +10,8 @@ namespace ProEvent.Services.Core.DTOs
         public int? ParticipantId { get; set; }
         public string? UserId { get; set; }
         public DateTime RegistrationDate { get; set; }
-        public Participant Participant { get; set; }
+        [JsonIgnore]
+        public Participant? Participant { get; set; }
 
 
     }

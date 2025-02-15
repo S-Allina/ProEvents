@@ -14,12 +14,10 @@ namespace ProEvent.Services.Infrastructure.Repository
     {
         private readonly ApplicationDbContext _db;
         private IMapper _mapper;
-        private readonly IValidator<Enrollment> _enrollmentValidator;
-        public EnrollmentRepository(ApplicationDbContext db, IMapper mapper, IValidator<Enrollment> enrollmentValidator) 
+        public EnrollmentRepository(ApplicationDbContext db, IMapper mapper) 
         {
             _db = db;
             _mapper = mapper;
-            _enrollmentValidator = enrollmentValidator;
         }
 
         // EnrollmentRepository.cs
@@ -42,107 +40,86 @@ namespace ProEvent.Services.Infrastructure.Repository
             return await _db.Participants.FirstOrDefaultAsync(p => p.UserId == userId).ContinueWith(t => t.Result?.Id);
         }
 
-
-
         public async Task<EnrollmentDTO> CreateUpdateEnrollment(EnrollmentDTO enrollmentDTO)
         {
-            // 1. Validate the EnrollmentDTO
-         
-
-            //enrollmentDTO.ParticipantId = _db.Participants.FirstOrDefault(p => p.UserId == enrollmentDTO.UserId).Id; //Удаляем отсюда!!!  (Это *должно* быть в логике сервиса, если это нужно. Но лучше пересмотреть подход.)
-
             Enrollment enrollment = _mapper.Map<EnrollmentDTO, Enrollment>(enrollmentDTO);
-            var validationResult = await _enrollmentValidator.ValidateAsync(enrollment);
-
-            if (!validationResult.IsValid)
+            if (enrollment.Participant != null)
             {
-                var errors = validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-                throw new ValidationException(string.Join(Environment.NewLine, errors));
+                _db.Entry(enrollment.Participant).State = EntityState.Detached;
             }
             if (enrollment.Id != 0)
             {
-                // Валидация перед обновлением существующей записи
                 var existingEnrollment = await _db.Enrollments.FindAsync(enrollment.Id);
                 if (existingEnrollment == null)
                 {
                     throw new ArgumentException($"Enrollment with ID {enrollment.Id} not found.");
                 }
 
-                // Validate existing enrollment
-                var entityValidationResult = await _enrollmentValidator.ValidateAsync(enrollment);
-
-                if (!entityValidationResult.IsValid)
-                {
-                    var errors = entityValidationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-                    throw new ValidationException($"Enrollment Entity Validation failed:{string.Join(Environment.NewLine, errors)}");
-                }
-
                 _db.Enrollments.Update(enrollment);
             }
             else
             {
-                // Validate new enrollment
-                var entityValidationResult = await _enrollmentValidator.ValidateAsync(enrollment);
-
-                if (!entityValidationResult.IsValid)
-                {
-                    var errors = entityValidationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-                    throw new ValidationException($"Enrollment Entity Validation failed:{string.Join(Environment.NewLine, errors)}");
-                }
                 _db.Enrollments.Add(enrollment);
             }
 
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("При регистрации на событие произошла ошибка.", ex);
+            }
 
             return _mapper.Map<Enrollment, EnrollmentDTO>(enrollment);
         }
+
         public async Task<bool> DeleteEnrollment(int id)
         {
             try
             {
-
                 Enrollment enrollment = await _db.Enrollments.FirstOrDefaultAsync(u => u.Id == id);
                 if (enrollment == null)
                 {
                     return false;
                 }
+
                 _db.Enrollments.Remove(enrollment);
                 await _db.SaveChangesAsync();
                 return true;
-
             }
-            catch
+            catch (Exception ex)
             {
+            
                 return false;
             }
         }
+    
 
-        public async Task<EnrollmentDTO> GetEnrollmentById(int id)
+public async Task<EnrollmentDTO> GetEnrollmentById(int id)
         {
             Enrollment enrollment = await _db.Enrollments.Where(x => x.Id == id).FirstOrDefaultAsync();
             return _mapper.Map<EnrollmentDTO>(enrollment);
         }
-        public async Task<IEnumerable<EnrollmentDTO>> GetEnrollmentsByEventId(int eventId)
+        public async Task<IEnumerable<EnrollmentDTO>> GetEnrollments(int? eventId = null)
         {
-            List<Enrollment> enrollment = await _db.Enrollments
-                .Include(e => e.Participant) // Важно включить данные Participant
-                .Where(e => e.EventId == eventId)
-                .ToListAsync();
-            return _mapper.Map<List<EnrollmentDTO>>(enrollment);
+            IQueryable<Enrollment> query = _db.Enrollments.Include(e => e.Participant); 
+
+            if (eventId.HasValue)
+            {
+                query = query.Where(e => e.EventId == eventId);
+            }
+
+            List<Enrollment> enrollments = await query.ToListAsync();
+            return _mapper.Map<List<Enrollment>, List<EnrollmentDTO>>(enrollments);
         }
-        public async Task<IEnumerable<EnrollmentDTO>> GetEnrollments()
-        {
-            List<Enrollment> enrollment = await _db.Enrollments.ToListAsync();
-            return _mapper.Map<List<EnrollmentDTO>>(enrollment);
-        }
-        public async Task<List<Enrollment>> GetEnrollmentsForParticipantOnDate(int eventId, int participantId, DateTime eventDate)
+        public async Task<List<Enrollment>> GetEnrollmentsForParticipantOnDate(int eventId, int participantId)
         {
             return await _db.Enrollments
-                .Include(e => e.Event) // Подгружаем информацию о событии
+                .Include(e => e.Event)
                 .Where(e =>
-                    e.ParticipantId == participantId && // Фильтруем по участнику
-                    (e.EventId == eventId || (e.EventId != eventId && // Исключаем текущее событие
-                    e.Event.Date == eventDate))) // Фильтруем по дате
+                    e.ParticipantId == participantId &&
+                    (e.EventId == eventId ))
                 .ToListAsync();
         }
 

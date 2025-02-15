@@ -11,27 +11,21 @@ namespace ProEvent.Services.Infrastructure.Services
 {
     public class EventService : IEventService
     {
-        private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IMemoryCache _cache;
         private readonly IMapper _mapper;
         private readonly IValidator<Event> _eventValidator;
         private const string EventImageCacheKeyPrefix = "EventImage_";
 
-        public EventService(IEventRepository eventRepository, IMemoryCache cache, IMapper mapper, IEnrollmentRepository enrollmentRepository, IValidator<Event> eventValidator)
+        public EventService(IEventRepository eventRepository, IMemoryCache cache, IMapper mapper, IValidator<Event> eventValidator)
         {
             _eventRepository = eventRepository;
             _cache = cache;
             _mapper = mapper;
-            _enrollmentRepository = enrollmentRepository;
             _eventValidator = eventValidator;
         }
 
-        public async Task<bool> CanParticipantAttendEvent(int participantId, DateTime eventDate, int eventId)
-        {
-            var existingEnrollments = await _enrollmentRepository.GetEnrollmentsForParticipantOnDate(eventId, participantId, eventDate);
-            return !existingEnrollments.Any();
-        }
+     
 
         public async Task<EventDTO> GetEventById(int id)
         {
@@ -48,7 +42,24 @@ namespace ProEvent.Services.Infrastructure.Services
 
             return eventDto;
         }
-
+        public async Task<(IEnumerable<EventDTO> Events, int TotalCount)> GetEvents(
+    int pageNumber = 1,
+    int pageSize = 4,
+    DateTime? startDate = null,
+    DateTime? endDate = null,
+    string? location = null,
+    string? category = null,
+    string? name = null)
+        {
+            return await _eventRepository.GetEvents(
+                    pageNumber,
+                    pageSize,
+                    startDate,
+                    endDate,
+                    location,
+                    category,
+                    name);
+        }
         private async Task<byte[]> GetEventImage(int eventId, byte[] imageBytes)
         {
             if (imageBytes == null)

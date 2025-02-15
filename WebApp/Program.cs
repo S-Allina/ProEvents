@@ -122,11 +122,12 @@ namespace WebApp
 
             // Register custom services
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IEventService, EventService>();
+            builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddMemoryCache(); // Добавьте это в ConfigureServices или Program.cs
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddSingleton<ResponseDTO>();
-            builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
             builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
