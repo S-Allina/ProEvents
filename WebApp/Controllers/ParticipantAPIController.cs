@@ -1,36 +1,35 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProEvent.Services.Core.DTOs;
-using ProEvent.Services.Core.Interfaces;
+using ProEvent.Services.Core.Interfaces.IService;
 using ProEvent.Services.Core.Models;
-using ProEvent.Services.Core.Repository;
 using ProEvent.Services.Core.Validators;
 using ProEvent.Services.Infrastructure.Repository;
 using ProEvents.Service.Core.DTOs;
+using System.Security.Claims;
 
 namespace ProEvent.WebApp.Controllers
 {
-    //[Authorize]
     [ApiController]
     [Route("/participants")]
     public class ParticipantAPIController : Controller
     {
         protected ResponseDTO _response;
-        private IParticipantRepository _participantRepository;
+        private readonly IParticipantService _participantService;
 
-        public ParticipantAPIController(IParticipantRepository participantRepository, ResponseDTO response)
+        public ParticipantAPIController(IParticipantService participantService, ResponseDTO response)
         {
-            _participantRepository = participantRepository;
+            _participantService = participantService;
             this._response = new ResponseDTO();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(CancellationToken cancellationToken = default)
         {
-            var participants = await _participantRepository.GetParticipants();
+            var participants = await _participantService.GetParticipants(cancellationToken);
 
-            // Create a response object that includes the events and pagination information
             var response = new
             {
                 participants = participants
@@ -38,48 +37,35 @@ namespace ProEvent.WebApp.Controllers
 
             return Ok(response);
         }
-       
+
         [HttpGet]
-        //[Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("GetByUserId/{id}")]
-        public async Task<object> GetByUserId(string id)
+        public async Task<object> GetByUserId(string id, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                ParticipantDTO participantDTO = await _participantRepository.GetParticipantByUserId(id);
+                ParticipantDTO participantDTO = await _participantService.GetParticipantByUserId(id, cancellationToken);
                 _response.Result = participantDTO;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
+           
             return _response;
         }
-       //метод создания вызывается при регистрации
         [HttpPut]
-        public async Task<object> Put([FromBody] ParticipantDTO participantDTO)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<object> Put([FromBody] ParticipantDTO participantDTO, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                ParticipantDTO model = await _participantRepository.CreateUpdateParticipant(participantDTO);
+            
+                ParticipantDTO model = await _participantService.CreateUpdateParticipant(participantDTO, cancellationToken);
                 _response.Result = model;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
             return _response;
         }
+
         [HttpDelete]
-        //[Authorize(Roles = "Admin")]
         [Route("{id}")]
-        public async Task<object> Delete(int id)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<object> Delete(int id, CancellationToken cancellationToken = default)
         {
             try
             {
-                bool isSuccess = await _participantRepository.DeleteParticipant(id);
+                bool isSuccess = await _participantService.DeleteParticipant(id, cancellationToken);
                 _response.Result = isSuccess;
             }
             catch (Exception ex)

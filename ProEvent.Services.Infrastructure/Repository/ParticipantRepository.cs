@@ -3,8 +3,8 @@ using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ProEvent.Services.Core.DTOs;
+using ProEvent.Services.Core.Interfaces.IRepository;
 using ProEvent.Services.Core.Models;
-using ProEvent.Services.Core.Repository;
 using ProEvent.Services.Infrastructure.Data;
 
 namespace ProEvent.Services.Infrastructure.Repository
@@ -12,71 +12,62 @@ namespace ProEvent.Services.Infrastructure.Repository
     public class ParticipantRepository : IParticipantRepository
     {
         private readonly ApplicationDbContext _db;
-        private IMapper _mapper;
-        private readonly IValidator<Participant> _participantValidator;
-        public ParticipantRepository(ApplicationDbContext db, IMapper mapper, IValidator<Participant> participantValidator)
+        private readonly IMapper _mapper;
+
+        public ParticipantRepository(ApplicationDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
-            _participantValidator = participantValidator;
         }
 
-
-        public async Task<ParticipantDTO> CreateUpdateParticipant(ParticipantDTO participantDTO)
+        public async Task<ParticipantDTO> CreateUpdateParticipant(ParticipantDTO participantDTO, CancellationToken cancellationToken)
         {
-            Participant participants = _mapper.Map<ParticipantDTO, Participant>(participantDTO);
-            var validationResult = await _participantValidator.ValidateAsync(participants);
-
-            if (!validationResult.IsValid)
-            {
-                var errors = validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-                throw new ValidationException(string.Join(Environment.NewLine, errors));
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             Participant participant = _mapper.Map<ParticipantDTO, Participant>(participantDTO);
 
-            var entityValidationResult = await _participantValidator.ValidateAsync(participant);
-            if (!entityValidationResult.IsValid)
-            {
-                var errors = entityValidationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToList();
-                throw new ValidationException(string.Join(Environment.NewLine, errors));
-            }
-
             if (participant.Id != 0)
             {
-
-                var existingParticipant = await _db.Participants.FindAsync(participant.Id);
+                var existingParticipant = await _db.Participants.FindAsync(new object[] { participant.Id }, cancellationToken);
                 if (existingParticipant == null)
                 {
                     throw new ArgumentException($"Participant with ID {participant.Id} not found.");
                 }
-                _db.Participants.Update(participant);
+                _mapper.Map(participantDTO, existingParticipant);
+                _db.Entry(existingParticipant).State = EntityState.Modified;
             }
             else
             {
-
                 _db.Participants.Add(participant);
             }
 
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Ошибка при сохранении участника в базу данных.", ex);
+            }
 
             return _mapper.Map<Participant, ParticipantDTO>(participant);
         }
 
-        public async Task<bool> DeleteParticipant(int id)
+        public async Task<bool> DeleteParticipant(int id, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
-
-                Participant participants = await _db.Participants.FirstOrDefaultAsync(u => u.Id == id);
-                if (participants == null)
+                Participant participant = await _db.Participants.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+                if (participant == null)
                 {
                     return false;
                 }
-                _db.Participants.Remove(participants);
-                await _db.SaveChangesAsync();
-                return true;
 
+                _db.Participants.Remove(participant);
+                await _db.SaveChangesAsync(cancellationToken);
+                return true;
             }
             catch
             {
@@ -84,15 +75,22 @@ namespace ProEvent.Services.Infrastructure.Repository
             }
         }
 
-        public async Task<ParticipantDTO> GetParticipantByUserId(string id)
+        public async Task<ParticipantDTO> GetParticipantByUserId(string id, CancellationToken cancellationToken)
         {
-            Participant participants = await _db.Participants.Where(x => x.UserId == id).FirstOrDefaultAsync();
-            return _mapper.Map<ParticipantDTO>(participants);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            Participant participant = await _db.Participants
+                .Where(x => x.UserId == id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return _mapper.Map<ParticipantDTO>(participant);
         }
 
-        public async Task<IEnumerable<ParticipantDTO>> GetParticipants()
+        public async Task<IEnumerable<ParticipantDTO>> GetParticipants(CancellationToken cancellationToken)
         {
-            List<Participant> participants = await _db.Participants.ToListAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Participant> participants = await _db.Participants.ToListAsync(cancellationToken);
             return _mapper.Map<List<ParticipantDTO>>(participants);
         }
     }

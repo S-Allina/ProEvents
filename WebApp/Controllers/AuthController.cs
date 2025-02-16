@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProEvent.Services.Core.Models;
 using ProEvent.Services.Identity.DTOs;
@@ -20,98 +21,37 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegistrationModel model)
+        public async Task<IActionResult> Register(UserRegistrationModel model, CancellationToken cancellationToken)
         {
-            AuthenticationResponseDTO response = new AuthenticationResponseDTO();
-            try
-            {
-                AuthenticationResponseDTO result = await _authenticationService.RegisterUser(model);
-                response.Token = result.Token;
-                response.UserId = result.UserId;
-                response.UserName = result.UserName;
-                response.Email = result.Email;
-                response.Role = result.Role;
-                response.DisplayMessage = "Пользователь успешно зарегистрирован.";
-                response.IsSuccess = true;
-                return Ok(response);
-            }
-            catch (ArgumentException ex)
-            {
-                response.IsSuccess = false;
-                response.DisplayMessage = "Регистрация не удалась.";
-                response.ErrorMessages = new List<string?> { ex.Message };
-                return BadRequest(response);
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.DisplayMessage = "Внутренняя ошибка сервера во время регистрации.";
-                response.ErrorMessages = new List<string?> { ex.Message };
-
-                return StatusCode(500, response);
-            }
+            AuthenticationResponseDTO result = await _authenticationService.RegisterUser(model, cancellationToken);
+            result.DisplayMessage = "Пользователь успешно зарегистрирован.";
+            return Ok(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginModel model)
+        public async Task<IActionResult> Login(UserLoginModel model, CancellationToken cancellationToken)
         {
-            AuthenticationResponseDTO response = new AuthenticationResponseDTO();
-            try
+            AuthenticationResponseDTO result = await _authenticationService.LoginUser(model, cancellationToken);
+
+            if (result == null)
             {
-                AuthenticationResponseDTO result = await _authenticationService.LoginUser(model);
-                if (result != null)
-                {
-                    response.Token = result.Token;
-                    response.UserId = result.UserId;
-                    response.UserName = result.UserName;
-                    response.Email = result.Email;
-                    response.Role = result.Role;
-                    response.DisplayMessage = "Вход успешен.";
-                    response.IsSuccess = true;
-                    return Ok(response);
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.DisplayMessage = "Неверная попытка входа.";
-                    response.ErrorMessages = new List<string?> { "Неверное имя пользователя или пароль." };
-                    return Unauthorized(response);
-                }
+                result.IsSuccess = false;
+                result.DisplayMessage = "Неверная попытка входа.";
+                return Unauthorized(result);
             }
-            catch (ArgumentException ex)
-            {
-                response.IsSuccess = false;
-                response.DisplayMessage = "Ошибка входа.";
-                response.ErrorMessages = new List<string?> { ex.Message };
-                return Unauthorized(response); 
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.DisplayMessage = "Внутренняя ошибка сервера при входе в систему.";
-                response.ErrorMessages = new List<string?> { "Произошла непредвиденная ошибка." };
-                return StatusCode(500, response);
-            }
+
+            result.DisplayMessage = "Вход успешен.";
+
+            return Ok(result);
         }
 
         [HttpGet("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
-            AuthenticationResponseDTO response = new AuthenticationResponseDTO(); 
-            try
-            {
-                await _authenticationService.LogoutUser();
-                response.IsSuccess = true;
-                response.DisplayMessage = "Выход был успешен.";
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.DisplayMessage = "Ошибка выхода.";
-                response.ErrorMessages = new List<string?> { ex.Message }; 
-                return StatusCode(500, response);
-            }
+            AuthenticationResponseDTO response = new AuthenticationResponseDTO();
+            await _authenticationService.LogoutUser(cancellationToken);
+            response.DisplayMessage = "Выход был успешен.";
+            return Ok(response);
         }
     }
 }

@@ -40,12 +40,12 @@ namespace WebApp.Middleware
                 case ProEvent.Services.Core.Exceptions.ValidationException validationException:
                     status = HttpStatusCode.BadRequest;
                     message = "Ошибка валидации.";
-                    errors = validationException.Errors; 
+                    errors = validationException.Errors;
                     break;
 
                 case FluentValidation.ValidationException fluentValidationException:
                     status = HttpStatusCode.BadRequest;
-                    message = "Ошибка валидации.";
+                    message = "Ошибка валидации." + fluentValidationException.Message;
                     errors = fluentValidationException.Errors.Select(e => e.ErrorMessage).ToList();
                     break;
                 case ArgumentException argumentException:
@@ -64,7 +64,7 @@ namespace WebApp.Middleware
                     break;
                 default:
                     status = HttpStatusCode.InternalServerError;
-                    message = "Произошла непредвиденная ошибка.";
+                    message = "Произошла непредвиденная ошибка."+ exception.Message;
                     break;
             }
 

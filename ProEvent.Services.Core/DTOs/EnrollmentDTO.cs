@@ -12,7 +12,5 @@ namespace ProEvent.Services.Core.DTOs
         public DateTime RegistrationDate { get; set; }
         [JsonIgnore]
         public Participant? Participant { get; set; }
-
-
     }
 }

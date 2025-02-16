@@ -1,20 +1,18 @@
-
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 function Button({ children, onClick, className }) {
   return (
-    
     <StyledWrapper>
- <button className={`btn ${className || ''}`} onClick={onClick}>
-      <span>{children}</span>
-    </button>
+      <button className={`btn ${className || ''}`} onClick={onClick}>
+        <span>{children}</span>
+      </button>
     </StyledWrapper>
   );
 }
 Button.propTypes = {
-  children: PropTypes.node.isRequired, // children - React node (элемент, текст, компонент), обязательный
-  onClick: PropTypes.func,            // onClick - функция (обработчик клика), необязательный
-  className: PropTypes.string,        // className - строка (CSS класс), необязательный
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
 };
 const StyledWrapper = styled.div`
   .btn {
@@ -47,9 +45,7 @@ const StyledWrapper = styled.div`
       var(--fancy-button-gradient-50) 50%,
       var(--fancy-button-gradient-100) 100%
     );
-    box-shadow:
-      0px 4px 12px rgba(9, 12, 60, 0.15),
-      0px 2px 8px rgba(9, 12, 60, 0.15),
+    box-shadow: 0px 4px 12px rgba(9, 12, 60, 0.15), 0px 2px 8px rgba(9, 12, 60, 0.15),
       0px 1px 3px var(--fancy-button-inner-shadow-top-lg),
       inset 0px 1px 1px var(--fancy-button-inner-shadow-top),
       inset 0px -1px 3px var(--fancy-button-inner-shadow-bottom);
@@ -57,7 +53,7 @@ const StyledWrapper = styled.div`
 
   .btn:before,
   .btn:after {
-    content: "";
+    content: '';
     position: absolute;
     border-radius: inherit;
     will-change: transform;
@@ -90,11 +86,7 @@ const StyledWrapper = styled.div`
     border-radius: inherit;
     overflow: hidden;
     position: relative;
-    background-image: linear-gradient(
-      to bottom,
-      var(--fancy-button-shine-top),
-      transparent 8px
-    );
+    background-image: linear-gradient(to bottom, var(--fancy-button-shine-top), transparent 8px);
     background-position: 0 -6px;
     background-repeat: no-repeat;
     z-index: 1;
@@ -102,15 +94,13 @@ const StyledWrapper = styled.div`
 
   .btn span:before,
   .btn span:after {
-    content: "";
+    content: '';
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 50%;
     background-color: var(--fancy-button-shine-bottom);
-    transition:
-      opacity 0.25s,
-      transform 0.25s;
+    transition: opacity 0.25s, transform 0.25s;
     will-change: transform;
   }
 
@@ -140,6 +130,7 @@ const StyledWrapper = styled.div`
 
   .btn:hover span:after {
     opacity: 1;
-  }`;
+  }
+`;
 
 export default Button;

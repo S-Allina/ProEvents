@@ -22,10 +22,10 @@ const UserList = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
 
-  const isEventSpecific = !!eventId; // Check if eventId exists (is not null or undefined)
+  const isEventSpecific = !!eventId;
   const [open, setOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState(''); // Состояние для хранения текста сообщения
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Состояние для типа сообщения (success, error, warning, info)
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const {
     data: eventParticipantsData,
     isLoading: isEventParticipantsLoading,
@@ -33,7 +33,7 @@ const UserList = () => {
     error: eventParticipantsError,
     refetch: refetchEventParticipants,
   } = useGetParticipantsByEventIdQuery(eventId, {
-    skip: !isEventSpecific, // Skip this query if eventId is not provided
+    skip: !isEventSpecific,
     refetchOnMountOrArgChange: true,
   });
 
@@ -44,8 +44,7 @@ const UserList = () => {
     error: allParticipantsError,
     refetch: refetchAllParticipants,
   } = useGetParticipantsQuery(undefined, {
-    // Pass undefined to skip pagination
-    skip: isEventSpecific, // Skip this query if eventId is provided
+    skip: isEventSpecific,
     refetchOnMountOrArgChange: true,
   });
   console.log(allParticipantsData);
@@ -64,7 +63,7 @@ const UserList = () => {
       if (isEventSpecific) {
         await deleteEnrollment(id);
 
-        refetchEventParticipants(); // Refetch event-specific participants
+        refetchEventParticipants();
       } else {
         await deleteParticipant(id);
 
@@ -78,7 +77,6 @@ const UserList = () => {
       setSnackbarMessage('При отмене произошла ошибка' + error.message);
       setSnackbarSeverity('error');
       setOpen(true);
-      // Handle error
     }
   };
   const handleToProfile = async (id) => {
@@ -102,7 +100,7 @@ const UserList = () => {
         ).padStart(2, '0')}:${String(birthDate.getMinutes()).padStart(2, '0')}`;
 
         return {
-          id: participant.enrollmentId, // Assuming the enrollmentId is unique in the participant object
+          id: participant.enrollmentId,
           firstName: participant.firstName,
           lastName: participant.lastName,
           dateOfBirthday: formattedDate,
@@ -127,13 +125,13 @@ const UserList = () => {
         ).padStart(2, '0')}:${String(birthDate.getMinutes()).padStart(2, '0')}`;
 
         return {
-          id: participant.id, // Assuming the participantId is unique
+          id: participant.id,
           firstName: participant.firstName,
           lastName: participant.lastName,
           dateOfBirthday: formattedDate,
           email: participant.email,
           dateRegister: 'N/A',
-          userId: participant.userId, // or provide some other value if applicable
+          userId: participant.userId,
         };
       }) || [];
   }
@@ -167,7 +165,7 @@ const UserList = () => {
             color="error"
             size="small"
             onClick={() => handleDelete(params.row.id)}
-            disabled={isDeletingEnrollment || isDeletingParticipant} //disable during delete
+            disabled={isDeletingEnrollment || isDeletingParticipant}
           >
             Удалить
           </Button>
@@ -176,7 +174,6 @@ const UserList = () => {
             color="error"
             size="small"
             onClick={() => handleToProfile(params.row.userId)}
-            //disable during delete
           >
             Профиль
           </Button>
@@ -212,9 +209,9 @@ const UserList = () => {
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
-        message={snackbarMessage} // Используем динамический текст сообщения
+        message={snackbarMessage}
         action={action}
-        severity={snackbarSeverity} // Используем тип сообщения
+        severity={snackbarSeverity}
       />
       <Paper sx={{ height: '500px', width: '100%' }}>
         <DataGrid
@@ -223,7 +220,6 @@ const UserList = () => {
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10]}
           sx={{ border: 0 }}
-          // getRowId={(row) => row.id} //explicitly set id
         />
       </Paper>
     </StyledWrapper>

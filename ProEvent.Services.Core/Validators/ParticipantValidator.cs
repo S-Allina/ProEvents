@@ -17,7 +17,7 @@ namespace ProEvent.Services.Core.Validators
 
             RuleFor(p => p.DateOfBirth)
                 .NotEmpty().WithMessage("Дата рождения участника обязательна.")
-                .LessThan(DateTime.Now.AddYears(-16)).WithMessage("Участнику должно быть не менее 16 лет."); // Пример правила
+                .LessThan(DateTime.Now.AddYears(-16)).WithMessage("Участнику должно быть не менее 16 лет.");
 
             RuleFor(p => p.Email)
                 .NotEmpty().WithMessage("Email участника обязателен.")

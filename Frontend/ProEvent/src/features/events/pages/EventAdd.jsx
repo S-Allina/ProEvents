@@ -26,10 +26,10 @@ const EventForm = ({ eventId }) => {
   const [category, setCategory] = useState('');
   const [maxParticipants, setMaxParticipants] = useState(0);
   const [imageBytes, setImageBytes] = useState(null);
-  const [AddEditError, setAddEditError] = useState(null); // State for error message
+  const [AddEditError, setAddEditError] = useState(null);
 
-  const [createEvent, { isLoading: isCreating,  refetch:refetchCreate  }] = useCreateEventMutation();
-  const [updateEvent, { isLoading: isUpdating ,refetch:refetchUpdate}] = useUpdateEventMutation();
+  const [createEvent, { isLoading: isCreating, refetch: refetchCreate }] = useCreateEventMutation();
+  const [updateEvent, { isLoading: isUpdating}] = useUpdateEventMutation();
 
   const {
     data: eventData,
@@ -37,7 +37,7 @@ const EventForm = ({ eventId }) => {
     isError,
     error,
   } = useGetEventByIdQuery(eventId, {
-    skip: !eventId, // Skip the query if eventId is not provided
+    skip: !eventId,
   });
 
   const navigate = useNavigate();
@@ -45,12 +45,12 @@ const EventForm = ({ eventId }) => {
   console.log(eventData);
   useEffect(() => {
     if (eventData) {
-      setName(eventData.name);
-      setDescription(eventData.description);
-      setLocation(eventData.location);
-      setDate(dayjs(eventData.date));
-      setCategory(eventData.category);
-      setMaxParticipants(eventData.maxParticipants);
+      setName(eventData.result.name);
+      setDescription(eventData.result.description);
+      setLocation(eventData.result.location);
+      setDate(dayjs(eventData.result.date));
+      setCategory(eventData.result.category);
+      setMaxParticipants(eventData.result.maxParticipants);
     }
   }, [eventData]);
 
@@ -58,11 +58,11 @@ const EventForm = ({ eventId }) => {
     e.preventDefault();
 
     const newEvent = {
-      id: eventId ? parseInt(eventId) : 0, // Backend handles ID for create
+      id: eventId ? parseInt(eventId) : 0,
       name,
       description,
       location,
-      date: dayjs(date), // Ensure date is in ISO format
+      date: dayjs(date),
       category,
       maxParticipants: parseInt(maxParticipants),
       image: imageBytes,
@@ -71,23 +71,21 @@ const EventForm = ({ eventId }) => {
     try {
       if (eventId) {
         await updateEvent(newEvent).unwrap();
-        console.log('Event updated successfully!');
         setAddEditError('Все обновлено успешно');
-        refetchUpdate();
+      
       } else {
         await createEvent(newEvent).unwrap();
-        console.log('Event created successfully!');
         setAddEditError('Все создано успешно');
         refetchCreate();
       }
-     
+      navigate('/events');
     } catch (err) {
-      if (err && err.data && err.data.displayMessage) {
-        setAddEditError(err.data.displayMessage);
+      if (err && err.data) {
+        const { message, errors } = err.data;
+        setAddEditError(`${message}: ${errors.join(', ')}`);
       } else {
-        setAddEditError('Неверный формат данных.'); // Default error message
+        setAddEditError('Неверный формат данных.');
       }
-      // Handle error more visibly to the user
     }
   };
 
@@ -103,8 +101,7 @@ const EventForm = ({ eventId }) => {
         const arrayBuffer = reader.result;
         const byteArray = new Uint8Array(arrayBuffer);
 
-        // Разбиваем массив на части
-        const CHUNK_SIZE = 8192; // Выберите размер части (например, 8192)
+        const CHUNK_SIZE = 8192;
         let base64String = '';
         for (let i = 0; i < byteArray.length; i += CHUNK_SIZE) {
           const chunk = byteArray.subarray(i, i + CHUNK_SIZE);

@@ -1,11 +1,9 @@
-
 import Content from '../../../Components/Content/Content';
-import './Home.css'; // Общий стиль для App
+import './Home.css';
 
 export function Home() {
- 
   return (
-    <div >
+    <div>
       <Content />
     </div>
   );

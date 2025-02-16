@@ -14,8 +14,7 @@ export const store = configureStore({
     [enrollmentApi.reducerPath]: enrollmentApi.reducer,
     [participantApi.reducerPath]: participantApi.reducer,
     event: eventReducer,
-    // Уберите authReducer, если он больше не нужен
-    auth: authReducer
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -24,5 +23,3 @@ export const store = configureStore({
       .concat(enrollmentApi.middleware)
       .concat(participantApi.middleware),
 });
-
-

@@ -19,8 +19,7 @@ namespace ProEvent.Services.Core.DTOs
 
         public int MaxParticipants { get; set; }
 
-
-        public EventStatus Status { get; set; } // Добавленное поле
+        public EventStatus Status { get; set; }
 
         public DateTime RegistrationDate { get; set; }
     }

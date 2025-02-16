@@ -1,4 +1,3 @@
-const API_BASE_URL = 'http://localhost:5000/'; // Или выберите другой URL, который вам нужен.
-// Или, если вы хотите использовать переменную окружения:
+const API_BASE_URL = 'http://localhost:5000/';
 
-export { API_BASE_URL }; //Теперь экспортируем.
+export { API_BASE_URL };

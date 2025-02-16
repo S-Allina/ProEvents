@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 import Button from '../../../Components/Button/Button';
-// Предполагается, что у вас есть компонент Button
-// import { EventDTO } from '../models/Event'; // Импортируем EventDTO
 import PropTypes from 'prop-types';
-// import { useNavigate, useParams } from 'react-router-dom';
-// import { useDeleteEventMutation, useGetEventByIdQuery } from '../../../App/services/eventApi';
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,40 +9,21 @@ import Loader from '../../../Components/Loader/Loader';
 import { useCreateEnrollmentMutation } from '../../../App/services/enrollmentApi';
 import { useSelector } from 'react-redux';
 
-/**
- * @typedef {object} EventDTO
- * @property {number} id
- * @property {string} name
- * @property {string} description
- * @property {string} date - Сменить startTime и endTime на date
- * @property {string} location
- * @property {string} category
- * @property {number} maxParticipants
- * @property {string | null} image - Тип изменен на string или null
- */
-
-/**
- * @param {object} props
- * @param {EventDTO} props.event
- * @returns {JSX.Element}
- */
 const EventFull = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState(null);
-  // const navigate = useNavigate(); // Получаем функцию navigate
-  // const [deleteEvent, { isLoading: isDeleting }] = useDeleteEventMutation(); // Получаем функцию deleteEvent
   const { data, isLoading, isError, error } = useGetEventByIdQuery(id);
   const [createEnrollment] = useCreateEnrollmentMutation();
-  const userId = useSelector((state) => state.auth.user.userId); // Получаем isSuccess
+  const userId = useSelector((state) => state.auth.user.userId);
   const [deleteEvent, { isLoading: isDeleting }] = useDeleteEventMutation();
 
   console.log(data);
   useEffect(() => {
-    if (data && data.image) {
-      setImageUrl(`data:image/jpeg;base64,${data.image}`);
+    if (data && data.result.image) {
+      setImageUrl(`data:image/jpeg;base64,${data.result.image}`);
     } else {
-      setImageUrl(null); // Or a default image URL
+      setImageUrl(null);
     }
   }, [data]);
   if (isLoading) {
@@ -68,14 +45,11 @@ const EventFull = () => {
         registrationDate: new Date().toISOString(),
       };
 
-      console.log('Enrollment DTO:', enrollmentDTO); // Для отладки
-
+      console.log('Enrollment DTO:', enrollmentDTO);
       await createEnrollment(enrollmentDTO).unwrap();
       console.log('Enrollment created successfully!');
-      // Дополнительная логика после успешной регистрации
     } catch (error) {
       console.error('Failed to create enrollment:', error);
-      // Обработка ошибок (например, отображение сообщения об ошибке)
     }
   };
 
@@ -85,27 +59,25 @@ const EventFull = () => {
   const handleDeleteClick = async () => {
     try {
       await deleteEvent(id).unwrap();
-      alert('Удаление прошло успешно'); // Замените на более удобный способ отображения ошибок
-      navigate(`/`); // Внимание: может быть не лучшим решением для UI
+      alert('Удаление прошло успешно');
+      navigate(`/`);
     } catch (error) {
-      alert('Не удалось удалить событие',error); // Замените на более удобный способ отображения ошибок
+      alert('Не удалось удалить событие', error);
     }
   };
   return (
     <StyledWrapper>
-      <div className="image">{imageUrl && <img src={imageUrl} alt={data.name} />}</div>
+      <div className="image">{imageUrl && <img src={imageUrl} alt={data.result.name} />}</div>
       <div className="content">
-        <h2>{data.name}</h2>
-        <p className="discription">{data.description}</p>
-        <p>Дата: {data.date}</p>
-        <p>Место: {data.location}</p>
-        <p>Категория: {data.category}</p>
-        <p>Максимальное число участников: {data.maxParticipants}</p>
+        <h2>{data.result.name}</h2>
+        <p className="discription">{data.result.description}</p>
+        <p>Дата: {data.result.date}</p>
+        <p>Место: {data.result.location}</p>
+        <p>Категория: {data.result.category}</p>
+        <p>Максимальное число участников: {data.result.maxParticipants}</p>
         <div className="buttons">
-          {data.status!='NoPlaces' ? (
-            <Button onClick={handleEnroll}>
-              Пойду! 
-            </Button>
+          {data.status != 'NoPlaces' ? (
+            <Button onClick={handleEnroll}>Пойду!</Button>
           ) : (
             <p>Мест нет</p>
           )}
@@ -190,11 +162,11 @@ EventFull.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     description: PropTypes.string,
-    date: PropTypes.string.isRequired, // Проверяем, что date - строка
+    date: PropTypes.string.isRequired,
     location: PropTypes.string,
     category: PropTypes.string,
     maxParticipants: PropTypes.number,
-    image: PropTypes.string, // Проверяем, что image - строка
+    image: PropTypes.string,
   }).isRequired,
 };
 export default EventFull;

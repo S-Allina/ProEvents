@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isAuthenticated: localStorage.getItem('token') ? true : false,
@@ -7,25 +6,21 @@ const initialState = {
     userId: localStorage.getItem('userId') || null,
     userName: localStorage.getItem('userName') || null,
     email: localStorage.getItem('userEmail') || null,
-    role: localStorage.getItem('userRole') || null, // Добавляем роль
-
+    role: localStorage.getItem('userRole') || null,
   },
   token: localStorage.getItem('token') || null,
   isLoading: false,
   error: null,
 };
 
-export const checkAuth = createAsyncThunk(
-  'auth/checkAuth',
-  async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      return { isAuthenticated: true };
-    } else {
-      return { isAuthenticated: false };
-    }
+export const checkAuth = createAsyncThunk('auth/checkAuth', async () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    return { isAuthenticated: true };
+  } else {
+    return { isAuthenticated: false };
   }
-);
+});
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -43,8 +38,7 @@ export const authSlice = createSlice({
       localStorage.setItem('userId', action.payload.userId);
       localStorage.setItem('userName', action.payload.userName);
       localStorage.setItem('userEmail', action.payload.email);
-      localStorage.setItem('userRole', action.payload.role); // Сохраняем роль в localStorage
-
+      localStorage.setItem('userRole', action.payload.role);
     },
     logout: (state) => {
       state.isAuthenticated = false;
@@ -54,8 +48,7 @@ export const authSlice = createSlice({
       localStorage.removeItem('userId');
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail');
-      localStorage.removeItem('userRole'); // Удаляем роль из localStorage
-
+      localStorage.removeItem('userRole');
     },
   },
   extraReducers: (builder) => {

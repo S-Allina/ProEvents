@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using ProEvent.Services.Core.Models;
 using ProEvent.Services.Identity.Interfeces;
+using ProEvent.Services.Identity.Repository;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,37 +19,39 @@ namespace ProEvent.Services.Identity.Services
         private readonly string _jwtSecret;
         private readonly string _jwtIssuer;
         private readonly string _jwtAudience;
-
-        public TokenService(IConfiguration configuration)
+        private readonly IAuthenticationRepository _authenticationRepository;
+        public TokenService(IConfiguration configuration, IAuthenticationRepository authenticationRepository)
         {
             _configuration = configuration;
-            _jwtSecret = _configuration["Jwt:Secret"]; // Получите секретный ключ из конфигурации
+            _jwtSecret = _configuration["Jwt:Secret"];
             _jwtIssuer = _configuration["Jwt:Issuer"];
             _jwtAudience = _configuration["Jwt:Audience"];
+            _authenticationRepository = authenticationRepository;
         }
 
-        public string GenerateToken(ApplicationUser user)
+        public async Task<string> GenerateToken(ApplicationUser user)
         {
             var claims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim("userName", user.UserName),
-            // Добавьте другие claims, которые вам нужны (например, роли пользователя)
-        };
+ {
+ new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+ new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+ new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("userName", user.UserName),
+ };
+            string role = await _authenticationRepository.GetRoleAsync(user); // Исправлено: await
 
+            // Добавляем claim для роли
+            claims.Add(new Claim("role", role));
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _jwtIssuer,
-                audience: _jwtAudience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(2), // Установите время жизни токена
-                signingCredentials: creds
+            issuer: _jwtIssuer,
+            audience: _jwtAudience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddHours(24),
+            signingCredentials: creds
             );
-
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

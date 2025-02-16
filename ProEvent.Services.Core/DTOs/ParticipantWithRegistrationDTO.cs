@@ -9,7 +9,6 @@
         public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string UserId { get; set; }
-
         public DateTime RegistrationDate { get; set; }
     }
 }

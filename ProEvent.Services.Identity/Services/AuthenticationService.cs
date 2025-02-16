@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProEvent.Services.Core.Models;
+using ProEvent.Services.Core.Validators;
 using ProEvent.Services.Identity.DTOs;
 using ProEvent.Services.Identity.Interfeces;
 using ProEvent.Services.Identity.Models;
+using ProEvent.Services.Identity.Repository;
 using ProEvent.Services.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -16,84 +18,84 @@ namespace ProEvent.Services.Identity.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IAuthenticationRepository _authenticationRepository;
         private readonly ITokenService _tokenService;
-        private readonly ApplicationDbContext _dbContext;  // Inject ApplicationDbContext
+        private readonly ApplicationDbContext _dbContext;
         private readonly IValidator<Participant> _participantValidator;
 
         public AuthenticationService(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            IAuthenticationRepository authenticationRepository,
             ITokenService tokenService,
             ApplicationDbContext dbContext,
             IValidator<Participant> participantValidator)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _authenticationRepository = authenticationRepository;
             _tokenService = tokenService;
             _dbContext = dbContext;
             _participantValidator = participantValidator;
         }
 
-        public async Task<AuthenticationResponseDTO> RegisterUser(UserRegistrationModel model)
+        public async Task<AuthenticationResponseDTO> RegisterUser(UserRegistrationModel model, CancellationToken cancellationToken)
         {
-            var existingUserWithEmail = await _userManager.FindByEmailAsync(model.Email);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var existingUserWithEmail = await _authenticationRepository.FindUserByEmailAsync(model.Email, cancellationToken);
             if (existingUserWithEmail != null)
             {
                 throw new ArgumentException("Пользователь с таким email уже зарегистрирован.");
             }
-            var existingUserWithUsername = await _userManager.FindByNameAsync(model.UserName);
+
+            var existingUserWithUsername = await _authenticationRepository.FindUserByNameAsync(model.UserName, cancellationToken);
             if (existingUserWithUsername != null)
             {
                 throw new ArgumentException("Логин пользователя не уникален.");
             }
 
             var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _authenticationRepository.CreateUserAsync(user, model.Password);
 
-            if (result.Succeeded)
-            {
-                var participant = new Participant
-                {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    DateOfBirth = model.DateOfBirth,
-                    Email = model.Email,
-                    UserId = user.Id
-                };
-
-                var participantValidationResult = await _participantValidator.ValidateAsync(participant);
-                if (!participantValidationResult.IsValid)
-                {
-                    await _userManager.DeleteAsync(user);
-                    var errors = participantValidationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                    throw new ArgumentException(string.Join(" ", errors));
-                }
-
-                _dbContext.Participants.Add(participant);
-                try
-                {
-                    await _dbContext.SaveChangesAsync();
-                }
-                catch (DbUpdateException ex)
-                {
-                    await _userManager.DeleteAsync(user);
-                    throw new Exception("Ошибка при регистрации.", ex);
-                }
-
-                await _userManager.AddToRoleAsync(user, "User");
-                return await GenerateAuthenticationResponse(user);
-            }
-            else
+            if (!result.Succeeded)
             {
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception($"Ошибки регистрации: {errors}");
+                throw new ArgumentException($"Ошибки регистрации: {errors}");
             }
+
+            var participant = new Participant
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                DateOfBirth = model.DateOfBirth,
+                Email = model.Email,
+                UserId = user.Id
+            };
+
+            var participantValidationResult = await _participantValidator.ValidateAsync(participant, cancellationToken);
+            if (!participantValidationResult.IsValid)
+            {
+                await _authenticationRepository.DeleteUserAsync(user);
+                var errors = participantValidationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ArgumentException(string.Join(" ", errors));
+            }
+
+            _dbContext.Participants.Add(participant);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex)
+            {
+                await _authenticationRepository.DeleteUserAsync(user);
+                throw new ArgumentException("Ошибка при регистрации.", ex);
+            }
+
+            await _authenticationRepository.AddToRoleAsync(user, "User");
+            return await GenerateAuthenticationResponse(user);
         }
 
-        public async Task<AuthenticationResponseDTO> LoginUser(UserLoginModel model)
+        public async Task<AuthenticationResponseDTO> LoginUser(UserLoginModel model, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (model == null)
             {
                 throw new ArgumentNullException(nameof(model), "Неверный формат данных.");
@@ -104,41 +106,39 @@ namespace ProEvent.Services.Identity.Services
                 throw new ArgumentException("Требуется имя пользователя и пароль.");
             }
 
-            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _authenticationRepository.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                var user = await _userManager.FindByNameAsync(model.UserName);
-                if (user == null)
-                {
-                    throw new Exception("Пользователь не найден после успешного входа в систему.");
-                }
+                throw new ArgumentException("Неверный логин или пароль.");
+            }
 
-                return await GenerateAuthenticationResponse(user);
-            }
-            else
+            var user = await _authenticationRepository.FindUserByNameAsync(model.UserName, cancellationToken);
+            if (user == null)
             {
-                throw new Exception("Пользователя не существует.");
+                throw new Exception("Пользователь не найден после успешного входа в систему.");
             }
+            return await GenerateAuthenticationResponse(user);
         }
-        public async Task<bool> LogoutUser()
+
+        public async Task<bool> LogoutUser(CancellationToken cancellationToken)
         {
-            await _signInManager.SignOutAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            await _authenticationRepository.SignOutAsync();
             return true;
         }
+
         private async Task<AuthenticationResponseDTO> GenerateAuthenticationResponse(ApplicationUser user)
         {
-            var token = _tokenService.GenerateToken(user);
-            var role = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
-            var roleString = role.FirstOrDefault();
-
+            var token = await _tokenService.GenerateToken(user);
+            var role = await _authenticationRepository.GetRoleAsync(user).ConfigureAwait(false);
             return new AuthenticationResponseDTO
             {
                 Token = token,
                 UserId = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                Role = roleString
+                Role = role
             };
         }
     }

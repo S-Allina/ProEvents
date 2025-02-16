@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import Header from '../Components/Header/Header';
-import './Layout.css'; // Общий стиль для App
-
+import './Layout.css';
 const Layout = ({ children }) => {
   return (
     <div className="app">
@@ -12,7 +11,7 @@ const Layout = ({ children }) => {
 };
 
 Layout.propTypes = {
-  children: PropTypes.node.isRequired, // Или PropTypes.element.isRequired, если ожидается один элемент
+  children: PropTypes.node.isRequired,
 };
 
 export default Layout;

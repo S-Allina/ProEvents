@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import './NavLink.css';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom'; // Импортируем Link
+import { Link } from 'react-router-dom';
 
-function NavLink({ children, to, isActive }) { // Заменяем href на to
+function NavLink({ children, to, isActive }) {
   const className = classNames('nav-item', { 'is-active': isActive });
   return (
-    <Link to={to} className={className}> {/* Используем Link и to */}
+    <Link to={to} className={className}>
       {children}
     </Link>
   );
@@ -14,7 +14,7 @@ function NavLink({ children, to, isActive }) { // Заменяем href на to
 
 NavLink.propTypes = {
   children: PropTypes.node.isRequired,
-  to: PropTypes.string.isRequired, // Заменяем href на to
+  to: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
 };
 

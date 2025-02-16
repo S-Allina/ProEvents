@@ -23,8 +23,6 @@ namespace ProEvent.Services.Core.DTOs
         [JsonIgnore]
         public EventStatus? Status { get; set; }
 
-        public EventDTO() { } 
-
         public EventDTO(string name, string description, byte[]? image, DateTime date, string location, string category, int maxParticipants)
         {
             this.Name = name;

@@ -3,9 +3,10 @@ using ProEvent.Services.Core;
 using ProEvent.Services.Core.DTOs;
 using ProEvent.Services.Core.Interfaces;
 using ProEvent.Services.Core.Models;
-using ProEvent.Services.Core.Repository;
 using AutoMapper;
 using FluentValidation;
+using ProEvent.Services.Core.Interfaces.IRepository;
+using ProEvent.Services.Core.Interfaces.IService;
 
 namespace ProEvent.Services.Infrastructure.Services
 {
@@ -25,41 +26,38 @@ namespace ProEvent.Services.Infrastructure.Services
             _eventValidator = eventValidator;
         }
 
-     
-
-        public async Task<EventDTO> GetEventById(int id)
+        public async Task<EventDTO> GetEventById(int id, CancellationToken cancellationToken)
         {
-            var eventItem = await _eventRepository.GetEventById(id);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var eventItem = await _eventRepository.GetEventById(id, cancellationToken);
             if (eventItem == null)
             {
                 return null;
             }
 
             eventItem.Image = await GetEventImage(id, eventItem.Image);
-            EventStatus status = await _eventRepository.CalculateEventStatus(eventItem);
+
+            EventStatus status = await _eventRepository.CalculateEventStatus(eventItem, cancellationToken);
             EventDTO eventDto = _mapper.Map<EventDTO>(eventItem);
             eventDto.Status = status;
-
             return eventDto;
         }
+
         public async Task<(IEnumerable<EventDTO> Events, int TotalCount)> GetEvents(
-    int pageNumber = 1,
-    int pageSize = 4,
-    DateTime? startDate = null,
-    DateTime? endDate = null,
-    string? location = null,
-    string? category = null,
-    string? name = null)
+            int pageNumber = 1,
+            int pageSize = 4,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string? location = null,
+            string? category = null,
+            string? name = null,
+            CancellationToken cancellationToken = default)
         {
-            return await _eventRepository.GetEvents(
-                    pageNumber,
-                    pageSize,
-                    startDate,
-                    endDate,
-                    location,
-                    category,
-                    name);
+            cancellationToken.ThrowIfCancellationRequested();
+            return await _eventRepository.GetEvents(pageNumber, pageSize, startDate, endDate, location, category, name, cancellationToken);
         }
+
         private async Task<byte[]> GetEventImage(int eventId, byte[] imageBytes)
         {
             if (imageBytes == null)
@@ -68,7 +66,6 @@ namespace ProEvent.Services.Infrastructure.Services
             }
 
             string cacheKey = $"{EventImageCacheKeyPrefix}{eventId}";
-
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(30);
@@ -76,11 +73,13 @@ namespace ProEvent.Services.Infrastructure.Services
                 return imageBytes;
             });
         }
-        public async Task<bool> DeleteEvent(int id)
+
+        public async Task<bool> DeleteEvent(int id, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
-                return await _eventRepository.DeleteEvent(id);
+                return await _eventRepository.DeleteEvent(id, cancellationToken);
             }
             catch (ArgumentException)
             {
@@ -91,11 +90,14 @@ namespace ProEvent.Services.Infrastructure.Services
                 throw;
             }
         }
-        public async Task<EventDTO> CreateUpdateEvent(EventDTO eventDTO)
+
+        public async Task<EventDTO> CreateUpdateEvent(EventDTO eventDTO, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             Event eventEntity = _mapper.Map<Event>(eventDTO);
 
-            var validationResult = await _eventValidator.ValidateAsync(eventEntity);
+            var validationResult = await _eventValidator.ValidateAsync(eventEntity, cancellationToken);
 
             if (!validationResult.IsValid)
             {
@@ -104,11 +106,11 @@ namespace ProEvent.Services.Infrastructure.Services
 
             if (eventEntity.Id == 0)
             {
-                await _eventRepository.CreateUpdateEvent(eventDTO);
+                await _eventRepository.CreateUpdateEvent(eventDTO, cancellationToken);
             }
             else
             {
-                await _eventRepository.CreateUpdateEvent(eventDTO);
+                await _eventRepository.CreateUpdateEvent(eventDTO, cancellationToken);
             }
 
             return _mapper.Map<EventDTO>(eventEntity);

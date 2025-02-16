@@ -1,4 +1,3 @@
-
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +10,6 @@ using WebApp.Middleware;
 using Newtonsoft.Json.Converters;
 using System.Text.Json.Serialization;
 using ProEvents.Service.Core.DTOs;
-using ProEvent.Services.Core.Repository;
 using ProEvent.Services.Core.Interfaces;
 using ProEvent.Services.Core.Validators;
 using ProEvent.Services.Core.Models;
@@ -21,6 +19,10 @@ using ProEvent.Services.Infrastructure.Data;
 using ProEvent.Services.Infrastructure.Repository;
 using ProEvent.Services.Infrastructure;
 using ProEvent.Services.Infrastructure.Services;
+using ProEvent.Services.Identity.Repository;
+using ProEvent.Services.Core.Interfaces.IRepository;
+using ProEvent.Services.Core.Interfaces.IService;
+using Microsoft.Extensions.Options;
 
 namespace WebApp
 {
@@ -47,101 +49,94 @@ namespace WebApp
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            // Если строка подключения не задана в appsettings.json
             if (string.IsNullOrEmpty(connectionString))
             {
-                // пытаемся получить из переменных окружения
                 connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
             }
-            // Configure DbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-          sqlServerOptionsAction: sqlOptions =>
-          {
-              sqlOptions.EnableRetryOnFailure(
-                  maxRetryCount: 5,
-                  maxRetryDelay: TimeSpan.FromSeconds(30),
-                  errorNumbersToAdd: null);
-          }));
-
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>() // Добавьте Identity
-       .AddEntityFrameworkStores<ApplicationDbContext>()
-       .AddDefaultTokenProviders();
-
-            // Конфигурация IdentityOptions (пароли, блокировки и т.д.)
-            builder.Services.Configure<IdentityOptions>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+            sqlServerOptionsAction: sqlOptions =>
             {
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = false;
+                sqlOptions.EnableRetryOnFailure(
+     maxRetryCount: 5,
+     maxRetryDelay: TimeSpan.FromSeconds(30),
+     errorNumbersToAdd: null);
+            }));
+            var key = builder.Configuration.GetValue<string>("Jwt:Secret");
+            builder.Services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RoleClaimType = "role"
+                };
             });
 
-
-            builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-            builder.Services.AddMemoryCache();  // This is the crucial line!
-
-
-
-
-            // Configure Authentication and JWT
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                            ValidAudience = builder.Configuration["Jwt:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
-                        };
-                    });
 
             builder.Services.AddAuthorization();
 
-            // AutoMapper Configuration
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 1;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.ClaimsIdentity.UserIdClaimType = "id";
+            })
+             .AddEntityFrameworkStores<ApplicationDbContext>()
+             .AddDefaultTokenProviders();
+
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+            builder.Services.AddMemoryCache();
 
 
-
-            // Configure CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigins",
-                    policy =>
-                    {
-                        policy.WithOrigins("http://localhost:3000")
-                              .AllowAnyMethod()
-                              .AllowAnyHeader()
-                              .AllowCredentials();
-                    });
+     policy =>
+     {
+                policy.WithOrigins("http://localhost:5173")
+     .AllowAnyMethod()
+     .AllowAnyHeader()
+     .AllowCredentials();
             });
-
-            // Register custom services
+            });
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+            builder.Services.AddScoped<IParticipantService, ParticipantService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddMemoryCache(); // Добавьте это в ConfigureServices или Program.cs
+            builder.Services.AddMemoryCache();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddSingleton<ResponseDTO>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
             builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
-    
+            builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
-            // Add controllers and swagger
+
             builder.Services.AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EventValidator>())
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<EnrollmentValidator>())
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ParticipantValidator>())
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+            .AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssemblyContaining<EventValidator>();
+                fv.RegisterValidatorsFromAssemblyContaining<EnrollmentValidator>();
+                fv.RegisterValidatorsFromAssemblyContaining<ParticipantValidator>();
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
@@ -156,22 +151,22 @@ namespace WebApp
                     Scheme = "Bearer"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
-                        },
-                        new List<string>()
-                    }
-                });
+            {
+ {
+ new OpenApiSecurityScheme
+ {
+ Reference = new OpenApiReference
+ {
+ Type = ReferenceType.SecurityScheme,
+ Id = "Bearer"
+ },
+ Scheme = "oauth2",
+ Name = "Bearer",
+ In = ParameterLocation.Header,
+ },
+ new List<string>()
+ }
+            });
 
             });
 
@@ -179,7 +174,6 @@ namespace WebApp
             var app = builder.Build();
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -188,13 +182,10 @@ namespace WebApp
 
             app.UseHttpsRedirection();
             app.UseCors("AllowSpecificOrigins");
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
-            // Initialize roles
             using (var serviceScope = app.Services.CreateScope())
             {
                 var serviceProvider = serviceScope.ServiceProvider;

@@ -20,12 +20,12 @@ namespace ProEvent.Services.Core.Models
 
         public int MaxParticipants { get; set; }
 
-        public byte[]? Image { get; set; } // Для хранения изображения в базе данных (BLOB)
+        public byte[]? Image { get; set; }
 
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
 
-        public Event() { } // Необходимый конструктор без параметров для EF Core
+        public Event() { }
 
         public Event(string name, string description, DateTime date, string location, string category, int maxParticipants)
         {

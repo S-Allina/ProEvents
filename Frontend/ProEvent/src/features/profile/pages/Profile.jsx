@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import styled from 'styled-components';
-import { TextField } from '@mui/material';
+import { Alert, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
@@ -19,15 +19,14 @@ import { Error500 } from '../../Error/Error500';
 dayjs.locale('ru');
 
 const Profile = () => {
-  const { userId: routeUserId } = useParams(); // Получаем userId из параметров маршрута (например, /profile/:userId)
-  const loggedInUserId = useSelector((state) => state.auth.user.userId); // Получаем userId залогиненного пользователя из Redux store
+  const { userId: routeUserId } = useParams();
+  const loggedInUserId = useSelector((state) => state.auth.user.userId);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(dayjs());
-  const [isEditing, setIsEditing] = useState(false); // Отслеживаем, находится ли профиль в режиме редактирования
-
-  // Определяем userId для получения данных: используем routeUserId, если он есть (случай администратора), иначе используем loggedInUserId
+  const [isEditing, setIsEditing] = useState(false);
+  const [AddEditError, setAddEditError] = useState(null);
   const userIdToFetch = routeUserId || loggedInUserId;
   console.log(userIdToFetch);
   const {
@@ -36,9 +35,6 @@ const Profile = () => {
     isError,
   } = useGetParticipantByUserIdQuery(userIdToFetch);
   const [updateParticipant, { isLoading: isUpdating }] = useUpdateParticipantMutation();
-
-  // const navigate = useNavigate();
-
   useEffect(() => {
     if (participantData && participantData.result) {
       const { firstName, lastName, email, dateOfBirth } = participantData.result;
@@ -51,33 +47,43 @@ const Profile = () => {
 
   const handleSave = async () => {
     const updatedParticipant = {
-      id: participantData.result.id, // Убедитесь, что у вас есть ID
+      id: participantData.result.id,
       firstName,
       lastName,
       email,
-      dateOfBirth: dayjs(dateOfBirth).toISOString(), // Отправляем дату в формате ISO
-      userId: userIdToFetch, // Сохраняем userId一致
+      dateOfBirth: dayjs(dateOfBirth).toISOString(),
+      userId: userIdToFetch,
     };
 
     try {
-      await updateParticipant(updatedParticipant).unwrap();
-      setIsEditing(false); // Выключаем режим редактирования после успешного сохранения
-      console.log('Профиль успешно обновлен!');
+      const response= await updateParticipant(updatedParticipant).unwrap();
+      if (!response.isSuccess) {
+        const { displayMessage, errorMessages } = response;
+        const combinedErrors = errorMessages.join(', ');
+        setAddEditError(`${displayMessage || 'Ошибка обновления профиля.'}: ${combinedErrors}`);
+        return;
+      }
+      setIsEditing(false);
+      setAddEditError('Профиль успешно обновлен!');
     } catch (err) {
-      console.error('Не удалось обновить профиль:', err);
-      // Обрабатываем ошибку (например, показываем сообщение об ошибке пользователю)
+      if (err && err.data) {
+        const { message, errors } = err.data;
+        setAddEditError(`${message}: ${errors.join(', ')}`);
+      } else {
+        setAddEditError('Неверный формат данных.');
+      }
     }
   };
 
   const handleCancel = () => {
-    setIsEditing(false); // Возвращаемся в режим просмотра
-    // Сбрасываем значения формы к исходным данным (опционально)
+    setIsEditing(false);
     if (participantData && participantData.result) {
       const { firstName, lastName, email, dateOfBirth } = participantData.result;
       setFirstName(firstName || '');
       setLastName(lastName || '');
       setEmail(email || '');
       setDateOfBirth(dateOfBirth ? dayjs(dateOfBirth) : dayjs());
+      setAddEditError('');
     }
   };
 
@@ -93,22 +99,25 @@ const Profile = () => {
     return <div>Профиль не найден.</div>;
   }
 
-  const { firstName: originalFirstName } = participantData.result; // Используем исходные данные
+  const { firstName: originalFirstName } = participantData.result;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="content">
         <StyledFormControl className="text" onSubmit={(e) => e.preventDefault()}>
-          {' '}
-          {/* Предотвращаем отправку формы по умолчанию */}
           <h2>Профиль {originalFirstName}</h2>
+           {AddEditError && (
+                      <Alert severity="error" sx={{ marginBottom: 2 }}>
+                        {AddEditError}
+                      </Alert>
+                    )}
           <TextField
             label="Имя"
             variant="outlined"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
-            disabled={!isEditing} // Отключаем поле, если не в режиме редактирования
+            disabled={!isEditing}
           />
           <TextField
             label="Фамилия"
@@ -134,7 +143,6 @@ const Profile = () => {
             renderInput={(params) => <TextField {...params} disabled={!isEditing} />}
             disabled={!isEditing}
           />
-          {/* Условно рендерим кнопки в зависимости от состояния редактирования */}
           {isEditing ? (
             <div className="buttons">
               <Button

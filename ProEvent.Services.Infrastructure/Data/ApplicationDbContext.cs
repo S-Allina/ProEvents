@@ -5,7 +5,7 @@ using ProEvent.Services.Core.Models;
 
 namespace ProEvent.Services.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser> // IdentityDbContext вместо DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -14,9 +14,8 @@ namespace ProEvent.Services.Infrastructure.Data
         public DbSet<Participant> Participants { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // ВАЖНО: Сначала вызовите базовую реализацию!
+            base.OnModelCreating(modelBuilder);
 
-            // Enrollment
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.Event)
                 .WithMany(ev => ev.Enrollments)
@@ -27,13 +26,11 @@ namespace ProEvent.Services.Infrastructure.Data
                 .WithMany(p => p.Enrollments)
                 .HasForeignKey(e => e.ParticipantId);
 
-            // Связь между Participant и ApplicationUser
             modelBuilder.Entity<Participant>()
-                .HasOne<ApplicationUser>(p => p.User) // Навигационное свойство к ApplicationUser
-                .WithOne(u => u.Participant) // Навигационное свойство к Participant в ApplicationUser
-                .HasForeignKey<Participant>(p => p.UserId); // Внешний ключ в Participant
+                .HasOne<ApplicationUser>(p => p.User)
+                .WithOne(u => u.Participant)
+                .HasForeignKey<Participant>(p => p.UserId);
 
-            // Event Indexes
             modelBuilder.Entity<Event>()
                 .HasIndex(e => e.Name);
 
@@ -45,13 +42,11 @@ namespace ProEvent.Services.Infrastructure.Data
             modelBuilder.Entity<Event>()
                 .HasIndex(e => e.MaxParticipants);
 
-            // Enrollment Indexes
             modelBuilder.Entity<Enrollment>()
                 .HasIndex(e => e.EventId);
 
             modelBuilder.Entity<Enrollment>()
                 .HasIndex(e => e.ParticipantId);
-
 
             modelBuilder.Entity<Participant>()
                 .HasIndex(p => p.UserId)

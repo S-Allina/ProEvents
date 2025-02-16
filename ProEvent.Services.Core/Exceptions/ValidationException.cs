@@ -18,7 +18,7 @@ namespace ProEvent.Services.Core.Exceptions
 
         public ValidationException(string message) : base(message)
         {
-            Errors = new List<string> { message }; 
+            Errors = new List<string> { message };
         }
 
         public ValidationException(IEnumerable<string> errorMessages) : base("Произошла одна или несколько ошибок проверки.")
