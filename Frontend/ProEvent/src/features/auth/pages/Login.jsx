@@ -14,6 +14,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '../../../App/slices/authSlice';
 import styled from 'styled-components';
 import image from '/img/image.png';
+import Loader from '../../../Components/Loader/Loader';
 
 export function Login() {
   const location = useLocation();
@@ -33,22 +34,25 @@ export function Login() {
     event.preventDefault();
   };
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
+  const isLoading = useSelector((state) => state.auth.isLoading);
+  const user = useSelector((state) => state.auth.user); // Используем user для проверки перенаправления
+
   useEffect(() => {
-    if (isLoggedIn) {
-      const redirectPath = location.state?.from || '/';
-      navigate(redirectPath, { replace: true });
+    if (isLoggedIn && !isLoading && user) {
+      // Перенаправляем только, если пользователь авторизован, загрузка завершена и данные пользователя загружены
+      console.log('redirect in /');
+      navigate('/');
     }
-  }, [isLoggedIn, navigate, location]);
+  }, [isLoggedIn, navigate, location, isLoading, user]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoginError(null);
     try {
       const result = await loginUser({ userName: loginValue, password }).unwrap();
-      console.log(result);
+      // console.log(result);
       if (result && result.token) {
-        dispatch(login(result));
-        navigate('/');
+        dispatch(login(result)); // Устанавливаем isLoading: true, token
       }
     } catch (err) {
       if (err && err.data && err.data.displayMessage) {
@@ -59,6 +63,10 @@ export function Login() {
     }
   };
 
+  if (isLoading) {
+    // Показываем Loader, пока идет загрузка
+    return <Loader />;
+  }
   return (
     <StyledWrapper>
       <form onSubmit={handleSubmit}>

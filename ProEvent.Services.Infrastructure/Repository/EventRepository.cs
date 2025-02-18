@@ -139,7 +139,7 @@ namespace ProEvent.Services.Infrastructure.Repository
 
             int totalCount = await query.CountAsync(cancellationToken);
 
-            List<Event> events = await query.OrderBy(e=>e.Date)
+            List<Event> events = await query.OrderBy(e => e.Date)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);

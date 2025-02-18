@@ -32,7 +32,9 @@ export const authSlice = createSlice({
         userId: action.payload.userId,
         userName: action.payload.userName,
         email: action.payload.email,
+        role: action.payload.role,
       };
+      console.log('action ' + action);
       state.token = action.payload.token;
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('userId', action.payload.userId);

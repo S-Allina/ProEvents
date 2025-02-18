@@ -16,7 +16,7 @@ const EventCard = ({ event }) => {
   const [open, setOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
+  const userRole = useSelector((state) => state.auth.user?.role);
   const navigate = useNavigate();
   const [createEnrollment] = useCreateEnrollmentMutation();
   const userId = useSelector((state) => state.auth.user.userId);
@@ -55,8 +55,8 @@ const EventCard = ({ event }) => {
       }
     } catch (error) {
       setSnackbarMessage(error.data.message);
-      setSnackbarSeverity('error');      
-    }finally {
+      setSnackbarSeverity('error');
+    } finally {
       setOpen(true);
     }
   };
@@ -71,6 +71,7 @@ const EventCard = ({ event }) => {
   const handleUsersClick = () => {
     navigate(`/UserList/${id}`);
   };
+  const isAdmin = userRole === 'Admin';
 
   const action = (
     <>
@@ -97,17 +98,22 @@ const EventCard = ({ event }) => {
             {formattedDate}, {location}
           </p>
           <div className="buttons">
-            {status != 'NoPlaces' ? ( status != 'Passed' ?
-              <Button onClick={handleEnroll}>Пойду!</Button>
-              : (
+            {status != 'NoPlaces' ? (
+              status != 'Passed' ? (
+                <Button onClick={handleEnroll}>Пойду!</Button>
+              ) : (
                 <p>Уже прошло</p>
               )
             ) : (
               <p>Мест нет</p>
             )}
             <Button onClick={handleFullClick}>Подробнее</Button>
-            <Button onClick={handleEditClick}>Изменить</Button>
-            <Button onClick={handleUsersClick}>Участники</Button>
+            {isAdmin && (
+              <>
+                <Button onClick={handleEditClick}>Изменить</Button>
+                <Button onClick={handleUsersClick}>Участники</Button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -151,22 +157,23 @@ const StyledWrapper = styled.div`
   }
 
   .text {
+    height: 50%;
     margin: 0px;
-    padding: 10px 20px 20px 20px;
+    padding: 10px 5px 10px 5px;
     display: flex;
     flex-direction: column;
-    align-items: space-around;
+    justify-content: center;
   }
 
   .buttons p {
     margin: auto;
   }
   .text .h3 {
+    margin: 0;
+    margin-left: 10px;
     font-family: 'Lucida Sans' sans-serif;
     font-size: 15px;
     font-weight: 600;
-    margin: 0;
-
     color: black;
   }
 

@@ -79,7 +79,7 @@ namespace ProEvent.Services.Infrastructure.Repository
             return _mapper.Map<Enrollment, EnrollmentDTO>(enrollment);
         }
 
-        public async Task<bool> DeleteEnrollment(int id, CancellationToken cancellationToken=default)
+        public async Task<bool> DeleteEnrollment(int id, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

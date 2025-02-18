@@ -32,15 +32,14 @@ namespace ProEvent.Services.Identity.Services
         public async Task<string> GenerateToken(ApplicationUser user)
         {
             var claims = new List<Claim>
- {
- new Claim(JwtRegisteredClaimNames.Sub, user.Id),
- new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
- new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("userName", user.UserName),
- };
-            string role = await _authenticationRepository.GetRoleAsync(user); // Исправлено: await
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim("userName", user.UserName),
+                };
+            string role = await _authenticationRepository.GetRoleAsync(user);
 
-            // Добавляем claim для роли
             claims.Add(new Claim("role", role));
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

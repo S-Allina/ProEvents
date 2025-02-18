@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProEvent.Services.Core.DTOs;
 using ProEvent.Services.Core.Interfaces.IService;
@@ -8,6 +9,7 @@ using ProEvents.Service.Core.DTOs;
 
 namespace ProEnrollment.WebApp.Controllers
 {
+    [ApiController]
     [Route("/enrollments")]
     public class EnrollmentAPIController : Controller
     {
@@ -46,6 +48,7 @@ namespace ProEnrollment.WebApp.Controllers
 
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Post([FromBody] EnrollmentDTO enrollmentDTO, CancellationToken cancellationToken = default)
         {
             EnrollmentDTO model = await _enrollmentService.CreateUpdateEnrollment(enrollmentDTO, cancellationToken);
@@ -55,6 +58,7 @@ namespace ProEnrollment.WebApp.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Put([FromBody] EnrollmentDTO enrollmentDTO, CancellationToken cancellationToken = default)
         {
             EnrollmentDTO model = await _enrollmentService.CreateUpdateEnrollment(enrollmentDTO, cancellationToken);
@@ -64,6 +68,7 @@ namespace ProEnrollment.WebApp.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
             bool isSuccess = await _enrollmentService.DeleteEnrollment(id, cancellationToken);

@@ -58,9 +58,9 @@ namespace WebApp
             sqlServerOptionsAction: sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
-     maxRetryCount: 5,
-     maxRetryDelay: TimeSpan.FromSeconds(30),
-     errorNumbersToAdd: null);
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
             }));
             var key = builder.Configuration.GetValue<string>("Jwt:Secret");
             builder.Services.AddAuthentication(x =>
@@ -104,12 +104,12 @@ namespace WebApp
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigins",
-     policy =>
-     {
-                policy.WithOrigins("http://localhost:5173")
-     .AllowAnyMethod()
-     .AllowAnyHeader()
-     .AllowCredentials();
+            policy =>
+            {
+            policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
             });
             });
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -151,22 +151,22 @@ namespace WebApp
                     Scheme = "Bearer"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
- {
- new OpenApiSecurityScheme
- {
- Reference = new OpenApiReference
- {
- Type = ReferenceType.SecurityScheme,
- Id = "Bearer"
- },
- Scheme = "oauth2",
- Name = "Bearer",
- In = ParameterLocation.Header,
- },
- new List<string>()
- }
-            });
+                {
+                     {
+                        new OpenApiSecurityScheme
+                        {
+                             Reference = new OpenApiReference
+                             {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                             },
+                             Scheme = "oauth2",
+                             Name = "Bearer",
+                             In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                     }
+                });
 
             });
 

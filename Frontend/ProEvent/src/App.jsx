@@ -24,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Error500 />} />
+
           <Route element={<PrivateRoute />}>
             <Route
               path="/"
@@ -74,37 +75,46 @@ function App() {
                 </Layout>
               }
             />
-            <Route element={<AdminRoute />}>
+            <Route element={<PrivateRoute />}>
+              {' '}
               <Route
                 path="/events/add"
                 element={
-                  <Layout>
-                    <EventAdd />
-                  </Layout>
+                  <AdminRoute>
+                    <Layout>
+                      <EventAdd />
+                    </Layout>
+                  </AdminRoute>
                 }
               />
               <Route
                 path="/events/edit/:id"
                 element={
-                  <Layout>
-                    <EventEdit />
-                  </Layout>
+                  <AdminRoute>
+                    <Layout>
+                      <EventEdit />
+                    </Layout>
+                  </AdminRoute>
                 }
               />
               <Route
                 path="/UserList/:eventId"
                 element={
-                  <Layout>
-                    <UserList />
-                  </Layout>
+                  <AdminRoute>
+                    <Layout>
+                      <UserList />
+                    </Layout>
+                  </AdminRoute>
                 }
               />
               <Route
                 path="/UserList"
                 element={
-                  <Layout>
-                    <UserList />
-                  </Layout>
+                  <AdminRoute>
+                    <Layout>
+                      <UserList />
+                    </Layout>
+                  </AdminRoute>
                 }
               />
             </Route>

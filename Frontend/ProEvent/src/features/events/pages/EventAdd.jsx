@@ -28,8 +28,8 @@ const EventForm = ({ eventId }) => {
   const [imageBytes, setImageBytes] = useState(null);
   const [AddEditError, setAddEditError] = useState(null);
 
-  const [createEvent, { isLoading: isCreating, refetch: refetchCreate }] = useCreateEventMutation();
-  const [updateEvent, { isLoading: isUpdating}] = useUpdateEventMutation();
+  const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
+  const [updateEvent, { isLoading: isUpdating }] = useUpdateEventMutation();
 
   const {
     data: eventData,
@@ -70,16 +70,25 @@ const EventForm = ({ eventId }) => {
 
     try {
       if (eventId) {
-        await updateEvent(newEvent).unwrap();
-        setAddEditError('Все обновлено успешно');
-      
+        await updateEvent(newEvent)
+          .unwrap()
+          .then(() => {
+            setAddEditError('Все обновлено успешно');
+          });
       } else {
-        await createEvent(newEvent).unwrap();
-        setAddEditError('Все создано успешно');
-        refetchCreate();
+        await createEvent(newEvent)
+          .unwrap()
+          .then((result) => {
+            console.log(result);
+            if (result.isSuccess) {
+              setAddEditError(result.displayMessage);
+              navigate('/');
+            }
+          });
       }
       navigate('/events');
     } catch (err) {
+      console.log(err);
       if (err && err.data) {
         const { message, errors } = err.data;
         setAddEditError(`${message}: ${errors.join(', ')}`);

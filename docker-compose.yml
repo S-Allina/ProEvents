@@ -10,7 +10,7 @@ services:
 
   webapi:
     build:
-      context: .  # Важно: контекст сборки - корень проекта
+      context: .
       dockerfile: WebApp/Dockerfile
     ports:
       - "5000:80"
@@ -21,7 +21,7 @@ services:
       - ConnectionStrings__Default=Server=proevent-mssql-server-1;Database=ProEventDb;User Id=sa;Password=Your_password123;TrustServerCertificate=True
     command: sleep infinity
 
-  mssql-server:
+  mssql-server:  #  Вот здесь должен быть правильный отступ
     image: "mcr.microsoft.com/mssql/server:2019-latest"
     ports:
       - "1433:1433"
@@ -35,5 +35,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
 volumes:
   mssql_data:

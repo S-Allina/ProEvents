@@ -38,7 +38,7 @@ namespace ProEvent.WebApp.Controllers
             string? category = null,
             string? name = null,
             CancellationToken cancellationToken = default)
-        
+
         {
             try
             {
@@ -101,6 +101,7 @@ namespace ProEvent.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Post([FromBody] EventDTO eventDTO, CancellationToken cancellationToken = default)
         {
             EventDTO createdEvent = await _eventService.CreateUpdateEvent(eventDTO, cancellationToken);
@@ -110,6 +111,7 @@ namespace ProEvent.WebApp.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Put([FromBody] EventDTO eventDTO, CancellationToken cancellationToken = default)
         {
             EventDTO updatedEvent = await _eventService.CreateUpdateEvent(eventDTO, cancellationToken);
@@ -119,7 +121,7 @@ namespace ProEvent.WebApp.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
             bool isSuccess = await _eventService.DeleteEvent(id, cancellationToken);

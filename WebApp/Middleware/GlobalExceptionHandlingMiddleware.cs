@@ -64,7 +64,7 @@ namespace WebApp.Middleware
                     break;
                 default:
                     status = HttpStatusCode.InternalServerError;
-                    message = "Произошла непредвиденная ошибка."+ exception.Message;
+                    message = "Произошла непредвиденная ошибка." + exception.Message;
                     break;
             }
 

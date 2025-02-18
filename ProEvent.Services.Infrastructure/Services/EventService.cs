@@ -26,7 +26,7 @@ namespace ProEvent.Services.Infrastructure.Services
             _eventValidator = eventValidator;
         }
 
-        public async Task<EventDTO> GetEventById(int id, CancellationToken cancellationToken)
+        public async Task<EventDTO> GetEventById(int id, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -91,7 +91,7 @@ namespace ProEvent.Services.Infrastructure.Services
             }
         }
 
-        public async Task<EventDTO> CreateUpdateEvent(EventDTO eventDTO, CancellationToken cancellationToken)
+        public async Task<EventDTO> CreateUpdateEvent(EventDTO eventDTO, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

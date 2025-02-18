@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 import Button from '../../../Components/Button/Button';
 import PropTypes from 'prop-types';
-
+import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDeleteEventMutation, useGetEventByIdQuery } from '../../../App/services/eventApi';
 import Loader from '../../../Components/Loader/Loader';
 import { useCreateEnrollmentMutation } from '../../../App/services/enrollmentApi';
 import { useSelector } from 'react-redux';
+import { IconButton, Snackbar } from '@mui/material';
 
 const EventFull = () => {
   const { id } = useParams();
@@ -17,6 +18,10 @@ const EventFull = () => {
   const [createEnrollment] = useCreateEnrollmentMutation();
   const userId = useSelector((state) => state.auth.user.userId);
   const [deleteEvent, { isLoading: isDeleting }] = useDeleteEventMutation();
+  const [open, setOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const userRole = useSelector((state) => state.auth.user?.role);
 
   console.log(data);
   useEffect(() => {
@@ -44,29 +49,64 @@ const EventFull = () => {
         userId: userId,
         registrationDate: new Date().toISOString(),
       };
-
-      console.log('Enrollment DTO:', enrollmentDTO);
-      await createEnrollment(enrollmentDTO).unwrap();
-      console.log('Enrollment created successfully!');
+      const result = await createEnrollment(enrollmentDTO).unwrap();
+      if (result.isSuccess) {
+        setSnackbarMessage('Вы успешно зарегистрированы!');
+        setSnackbarSeverity('success');
+      } else {
+        setSnackbarMessage(result.displayMessage);
+        setSnackbarSeverity('error');
+      }
     } catch (error) {
-      console.error('Failed to create enrollment:', error);
+      setSnackbarMessage(error.data.message);
+      setSnackbarSeverity('error');      
+    }finally {
+      setOpen(true);
     }
   };
-
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
   const handleEditClick = () => {
     navigate(`/events/edit/${id}`);
   };
-  const handleDeleteClick = async () => {
-    try {
-      await deleteEvent(id).unwrap();
-      alert('Удаление прошло успешно');
-      navigate(`/`);
-    } catch (error) {
-      alert('Не удалось удалить событие', error);
-    }
+  const handleDeleteClick = () => {
+    deleteEvent(id)
+      .unwrap()
+      .then((result) => {
+        if (result.isSuccess) {
+          alert('Удаление прошло успешно');
+          navigate(`/`);
+        } else {
+          alert(`Не удалось удалить событие: ${result.displayMessage || 'Неизвестная ошибка'}`);
+        }
+      })
+      .catch((error) => {
+        console.error("Ошибка при удалении события:", error);
+        alert(`Произошла ошибка при удалении события: ${error.message || 'Неизвестная ошибка'}`);
+      });
   };
+  const isAdmin = userRole === 'Admin';
+  const action = (
+    <>
+      <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
   return (
     <StyledWrapper>
+       <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message={snackbarMessage}
+                action={action}
+                severity={snackbarSeverity}
+              />
       <div className="image">{imageUrl && <img src={imageUrl} alt={data.result.name} />}</div>
       <div className="content">
         <h2>{data.result.name}</h2>
@@ -81,11 +121,13 @@ const EventFull = () => {
           ) : (
             <p>Мест нет</p>
           )}
-          <Button onClick={handleUsersClick}>Участники</Button>
+          {isAdmin && (<> <Button onClick={handleUsersClick}>Участники</Button>
           <Button onClick={handleEditClick}>Изменить</Button>
-          <Button onClick={handleDeleteClick} disabled={isDeleting}>
-            {isDeleting ? 'Удаление...' : 'Удалить'}
-          </Button>
+                   
+                      <Button onClick={handleDeleteClick} disabled={isDeleting}>
+                       {isDeleting ? 'Удаление...' : 'Удалить'}
+                      </Button></>
+                    )}
         </div>
       </div>
     </StyledWrapper>
