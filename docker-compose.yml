@@ -14,27 +14,6 @@ services:
       dockerfile: WebApp/Dockerfile
     ports:
       - "5000:80"
-    depends_on:
-      - mssql-server
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:80
-      - ConnectionStrings__Default=Server=proevent-mssql-server-1;Database=ProEventDb;User Id=sa;Password=Your_password123;TrustServerCertificate=True
-    command: sleep infinity
-
-  mssql-server:  #  Вот здесь должен быть правильный отступ
-    image: "mcr.microsoft.com/mssql/server:2019-latest"
-    ports:
-      - "1433:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Your_password123
-    volumes:
-      - mssql_data:/var/opt/mssql
-    healthcheck:
-      test: ["CMD", "sqlcmd", "-S", "localhost,1433", "-U", "sa", "-P", "Your_password123", "-Q", "SELECT 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  mssql_data:
+      - ConnectionStrings__Default=workstation id=ProEvent.mssql.somee.com;packet size=4096;user id=Alliina_SQLLogin_1;pwd=uqx3eo6w1r;data source=ProEvent.mssql.somee.com;persist security info=False;initial catalog=ProEvent;TrustServerCertificate=True

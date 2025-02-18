@@ -145,7 +145,29 @@ namespace ProEvent.Services.Infrastructure.Repository
                 .ToListAsync(cancellationToken);
 
             var eventDTOs = _mapper.Map<List<EventDTO>>(events);
-
+            foreach (var eventDTO in eventDTOs)
+            {
+                var theEvent = await _db.Events.FirstOrDefaultAsync(eventItem => eventItem.Id == eventDTO.Id, cancellationToken);
+                if (theEvent.Image != null)
+                {
+                    int eventId = theEvent.Id;
+                    string cacheKey = $"{EventImageCacheKeyPrefix}{eventId}";
+                    theEvent.Image = await _cache.GetOrCreateAsync(cacheKey, async entry =>
+                    {
+                        entry.SlidingExpiration = TimeSpan.FromMinutes(30);
+                        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                        return theEvent.Image;
+                    });
+                }
+                if (theEvent != null)
+                {
+                    eventDTO.Status = await CalculateEventStatus(theEvent, cancellationToken);
+                }
+                else
+                {
+                    eventDTO.Status = EventStatus.Passed;
+                }
+            }
             return (eventDTOs, totalCount);
         }
         public async Task<IEnumerable<EventWithRegistrationDTO>> GetEventsByUser(string userId, CancellationToken cancellationToken)

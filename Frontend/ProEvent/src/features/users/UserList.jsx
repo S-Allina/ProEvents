@@ -167,8 +167,9 @@ const UserList = () => {
             onClick={() => handleDelete(params.row.id)}
             disabled={isDeletingEnrollment || isDeletingParticipant}
           >
-            Удалить
+            {allParticipantsData != undefined ? 'Удалить' : 'Отменить'}
           </Button>
+
           <Button
             variant="contained"
             color="error"

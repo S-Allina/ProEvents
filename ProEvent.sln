@@ -15,25 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FEADC456
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProEvent.Tests.Events", "ProEvent.Tests.Event\ProEvent.Tests.Events.csproj", "{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Frontend", "Frontend\", "{1F44C301-D2BD-4190-9C70-325D49F52AA9}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.VirtualPath = "/localhost_62114"
-		Debug.AspNetCompiler.PhysicalPath = "Frontend\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62114\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_62114"
-		Release.AspNetCompiler.PhysicalPath = "Frontend\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62114\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "62114"
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{2A21AB6C-FA9C-4C17-86BB-F0526FE9A53A}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
@@ -63,10 +44,6 @@ Global
 		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D8A2988-8DF0-4F33-8040-7DB465A8D1ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F44C301-D2BD-4190-9C70-325D49F52AA9}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6AEAAD1-BA5D-4BDD-BA30-B4C013145B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
