@@ -12,7 +12,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using ProEvent.Domain.Models;
 using ProEvent.DAL.Data;
-using ProEvent.Domain.Validators;
+using ProEvent.BLL.Validators;
 using ProEvent.BLL.Services;
 using ProEvent.DAL.Repository;
 using ProEvent.BLL;

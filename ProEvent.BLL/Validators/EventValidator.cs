@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using ProEvent.Domain.Models;
 
-namespace ProEvent.Domain.Validators
+namespace ProEvent.BLL.Validators
 {
     public class EventValidator : AbstractValidator<Event>
     {
