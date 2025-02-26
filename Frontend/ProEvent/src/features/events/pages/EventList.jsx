@@ -33,6 +33,7 @@ const EventList = () => {
       endDate: formatDateToISO(filters.endDate),
       location: filters.location,
       category: filters.category,
+      isPassed: filters.isPassed,
       name: searchTerm,
     },
     {
@@ -61,6 +62,7 @@ const EventList = () => {
     filters.endDate,
     filters.location,
     filters.category,
+    filters.isPassed,
     searchTerm,
     refetchPaginatedEvents,
   ]);

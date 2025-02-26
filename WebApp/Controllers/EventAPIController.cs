@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProEvent.Services.Core.DTOs;
-using ProEvent.Services.Core.Interfaces.IRepository;
-using ProEvent.Services.Core.Interfaces.IService;
-using ProEvent.Services.Core.Models;
-using ProEvent.Services.Core.Validators;
-using ProEvents.Service.Core.DTOs;
+using ProEvent.BLL.DTOs;
+using ProEvent.BLL.Interfaces.IService;
+using ProEvent.DAL.Interfaces.IRepository;
 
 namespace ProEvent.WebApp.Controllers
 {
@@ -16,13 +13,11 @@ namespace ProEvent.WebApp.Controllers
     public class eventAPIController : Controller
     {
         protected ResponseDTO _response;
-        private IEventRepository _eventRepository;
         private readonly ILogger<eventAPIController> _logger;
         private IEventService _eventService;
 
-        public eventAPIController(IEventRepository eventRepository, ResponseDTO response, ILogger<eventAPIController> logger, IEventService eventService)
+        public eventAPIController(ResponseDTO response, ILogger<eventAPIController> logger, IEventService eventService)
         {
-            _eventRepository = eventRepository;
             this._response = new ResponseDTO();
             _logger = logger;
             _eventService = eventService;
@@ -37,66 +32,48 @@ namespace ProEvent.WebApp.Controllers
             string? location = null,
             string? category = null,
             string? name = null,
+            bool isPassed = false,
             CancellationToken cancellationToken = default)
 
         {
-            try
-            {
-                var (events, totalCount) = await _eventService.GetEvents(
-                    pageNumber,
-                    pageSize,
-                    startDate,
-                    endDate,
-                    location,
-                    category,
-                    name,
-                    cancellationToken);
+            var (events, totalCount) = await _eventService.GetEvents(
+                            pageNumber,
+                            pageSize,
+                            startDate,
+                            endDate,
+                            location,
+                            category,
+                            name,
+                            isPassed,
+                            cancellationToken);
 
-                var response = new
-                {
-                    Events = events,
-                    TotalCount = totalCount,
-                    PageNumber = pageNumber,
-                    PageSize = pageSize
-                };
-
-                return Ok(response);
-            }
-            catch (Exception ex)
+            var response = new
             {
-                return StatusCode(500, "Internal Server Error");
-            }
+                Events = events,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            return Ok(response);
+
         }
 
         [HttpGet("getByUserId/{userId}")]
         public async Task<object> GetEventsByUser(string userId, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                IEnumerable<EventWithRegistrationDTO> eventDTOs = await _eventRepository.GetEventsByUser(userId, cancellationToken);
-                _response.Result = eventDTOs;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
+            IEnumerable<EventWithRegistrationDTO> eventDTOs = await _eventService.GetEventByUserId(userId, cancellationToken);
+            _response.Result = eventDTOs;
+
             return _response;
         }
 
         [HttpGet("{id}")]
         public async Task<object> GetById(int id, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                EventDTO eventDTOs = await _eventService.GetEventById(id, cancellationToken);
-                _response.Result = eventDTOs;
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> { ex.ToString() };
-            }
+            EventDTO eventDTOs = await _eventService.GetEventById(id, cancellationToken);
+            _response.Result = eventDTOs;
+
             return _response;
         }
 
@@ -125,19 +102,10 @@ namespace ProEvent.WebApp.Controllers
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
             bool isSuccess = await _eventService.DeleteEvent(id, cancellationToken);
-
-            if (isSuccess)
-            {
-                _response.Result = true;
-                _response.DisplayMessage = "Удаление прошло успешно";
-                return Ok(_response);
-            }
-            else
-            {
-                _response.IsSuccess = false;
-                _response.DisplayMessage = "Событие не найдено.";
-                return NotFound(_response);
-            }
+            _response.IsSuccess = isSuccess;
+            _response.Result = true;
+            _response.DisplayMessage = "Удаление прошло успешно";
+            return Ok(_response);
         }
     }
 }

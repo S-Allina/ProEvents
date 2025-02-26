@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
-using ProEvent.Services.Core.Models;
-using ProEvent.Services.Core.Validators;
+using ProEvent.Domain.Models;
+using ProEvent.Domain.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProEvent.Services.Core.DTOs;
-using ProEvent.Services.Core.Interfaces.IService;
-using ProEvent.Services.Infrastructure.Repository;
-using ProEvent.Services.Infrastructure.Services;
-using ProEvents.Service.Core.DTOs;
+using ProEvent.BLL.DTOs;
+using ProEvent.BLL.Interfaces.IService;
 
 namespace ProEnrollment.WebApp.Controllers
 {
@@ -34,14 +31,6 @@ namespace ProEnrollment.WebApp.Controllers
         public async Task<IActionResult> GetEnrollmentById(int id, CancellationToken cancellationToken = default)
         {
             EnrollmentDTO enrollment = await _enrollmentService.GetEnrollmentById(id, cancellationToken);
-
-            if (enrollment == null)
-            {
-                _response.IsSuccess = false;
-                _response.DisplayMessage = "Запись не найдена";
-                return NotFound(_response);
-            }
-
             _response.Result = enrollment;
             return Ok(_response);
         }
@@ -72,19 +61,10 @@ namespace ProEnrollment.WebApp.Controllers
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {
             bool isSuccess = await _enrollmentService.DeleteEnrollment(id, cancellationToken);
-
-            if (isSuccess)
-            {
-                _response.Result = true;
-                _response.DisplayMessage = "Запись удалена успешно";
-                return Ok(_response);
-            }
-            else
-            {
-                _response.IsSuccess = false;
-                _response.DisplayMessage = "Запись не найдена.";
-                return NotFound(_response);
-            }
+            _response.IsSuccess= isSuccess;
+            _response.Result = true;
+            _response.DisplayMessage = "Запись удалена успешно";
+            return Ok(_response);
         }
     }
 }

@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
-using ProEvent.Services.Core.DTOs;
-using ProEvent.Services.Core.Models;
-using ProEvent.Services.Infrastructure.Data;
-using ProEvent.Services.Infrastructure.Repository;
+using ProEvent.BLL.DTOs;
+using ProEvent.DAL.Data;
+using ProEvent.DAL.Repository;
+using ProEvent.Domain.Models;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -23,7 +23,6 @@ public class EventRepositoryTests
         {
             cfg.CreateMap<Event, EventDTO>().ReverseMap();
         });
-        _mapper = config.CreateMapper();
 
         _cache = new MemoryCache(new MemoryCacheOptions());
     }
@@ -57,14 +56,14 @@ public class EventRepositoryTests
             await context.SaveChangesAsync();
         }
 
-        var eventDTO = new EventDTO("Updated Event", "Updated Event Description", null, DateTime.Parse("2025-02-09"), "Updated Event Location", "Some Category", 10);
+        var events = new Event("Updated Event", "Updated Event Description",  DateTime.Parse("2025-02-09"), "Updated Event Location", "Some Category", 10);
 
-        eventDTO.Id = existingEvent.Id;
+        events.Id = existingEvent.Id;
         using (var context = CreateContext("CreateUpdateEvent_ShouldUpdateEvent_WhenEventExists"))
         {
-            var repository = new EventRepository(context, _mapper, _validator, _cache);
+            var repository = new EventRepository(context, _validator, _cache);
 
-            var result = await repository.CreateUpdateEvent(eventDTO, It.IsAny<CancellationToken>());
+            var result = await repository.CreateUpdateEvent(events, It.IsAny<CancellationToken>());
 
             Assert.NotNull(result);
             Assert.Equal("Updated Event", result.Name);
@@ -92,7 +91,7 @@ public class EventRepositoryTests
 
         using (var context = CreateContext("DeleteEvent_ShouldReturnTrue_WhenEventExists"))
         {
-            var repository = new EventRepository(context, _mapper, _validator, _cache);
+            var repository = new EventRepository(context, _validator, _cache);
 
             var result = await repository.DeleteEvent(existingEvent.Id, It.IsAny<CancellationToken>());
 
@@ -106,7 +105,7 @@ public class EventRepositoryTests
     {
         using (var context = CreateContext("DeleteEvent_ShouldReturnFalse_WhenEventDoesNotExist"))
         {
-            var repository = new EventRepository(context, _mapper, _validator, _cache);
+            var repository = new EventRepository(context, _validator, _cache);
 
             var result = await repository.DeleteEvent(999, It.IsAny<CancellationToken>()); // ID, который не существует
 
@@ -134,7 +133,7 @@ public class EventRepositoryTests
 
         using (var context = CreateContext("GetEventById_ShouldReturnEvent_WhenEventExists"))
         {
-            var repository = new EventRepository(context, _mapper, _validator, _cache);
+            var repository = new EventRepository(context, _validator, _cache);
 
             var result = await repository.GetEventById(3, It.IsAny<CancellationToken>());
 
@@ -184,9 +183,9 @@ public class EventRepositoryTests
 
         using (var context = CreateContext("GetFilteredEvents_ShouldReturnFilteredEvents_WhenFiltersAreApplied"))
         {
-            var repository = new EventRepository(context, _mapper, _validator, _cache);
+            var repository = new EventRepository(context,  _validator, _cache);
 
-            var result = await repository.GetEvents(1, 4, DateTime.Parse("2025-02-01"), DateTime.Parse("2025-03-31"), "Location A", "Category A");
+            var result = await repository.GetEvents(1, 4, DateTime.Parse("2025-02-01"), DateTime.Parse("2025-03-31"), "Location A", "Category A",null,true);
 
             var eventList = result.Events.ToList();
             Assert.Single(eventList);
@@ -216,7 +215,7 @@ public class EventRepositoryTests
 
         using (var context = CreateContext("GetEvents_ShouldReturnPagedEvents_WhenCalled"))
         {
-            var repository = new EventRepository(context, _mapper, _validator, _cache);
+            var repository = new EventRepository(context,  _validator, _cache);
 
             var (events, totalCount) = await repository.GetEvents(pageNumber: 2, pageSize: 5);
 
@@ -246,7 +245,7 @@ public class EventRepositoryTests
 
         using (var context = CreateContext("GetEventsByUser _ShouldReturnRegisteredEvents_WhenUser HasRegistrations"))
         {
-            var repository = new EventRepository(context, _mapper, _validator, _cache);
+            var repository = new EventRepository(context, _validator, _cache);
 
             var result = await repository.GetEventsByUser(userId, It.IsAny<CancellationToken>());
 

@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../../../App/slices/authSlice';
 import styled from 'styled-components';
 import SignIn from '/img/SignIn.png';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Loader from '../../../Components/Loader/Loader';
@@ -143,7 +143,7 @@ export function Register() {
                 required
               />
             </FormControl>
-            <DateTimePicker
+            <DatePicker
               label="Дата рождения"
               value={date}
               onChange={(newDate) => setDate(newDate)}

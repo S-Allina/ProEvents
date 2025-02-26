@@ -1,10 +1,9 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ProEvent.Services.Core.Models;
-using ProEvent.Services.Identity.DTOs;
-using ProEvent.Services.Identity.Interfeces;
-using ProEvent.Services.Identity.Models;
+using ProEvent.BLL.DTOs;
+using ProEvent.BLL.Interfaces.IService;
+using ProEvent.Domain.Models;
 
 namespace WebApp.Controllers
 {
@@ -32,13 +31,6 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Login(UserLoginModel model, CancellationToken cancellationToken)
         {
             AuthenticationResponseDTO result = await _authenticationService.LoginUser(model, cancellationToken);
-
-            if (result == null)
-            {
-                result.IsSuccess = false;
-                result.DisplayMessage = "Неверная попытка входа.";
-                return Unauthorized(result);
-            }
 
             result.DisplayMessage = "Вход успешен.";
 

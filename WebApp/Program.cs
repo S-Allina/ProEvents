@@ -9,20 +9,17 @@ using System.Text;
 using WebApp.Middleware;
 using Newtonsoft.Json.Converters;
 using System.Text.Json.Serialization;
-using ProEvents.Service.Core.DTOs;
-using ProEvent.Services.Core.Interfaces;
-using ProEvent.Services.Core.Validators;
-using ProEvent.Services.Core.Models;
-using ProEvent.Services.Identity.Interfeces;
-using ProEvent.Services.Identity.Services;
-using ProEvent.Services.Infrastructure.Data;
-using ProEvent.Services.Infrastructure.Repository;
-using ProEvent.Services.Infrastructure;
-using ProEvent.Services.Infrastructure.Services;
-using ProEvent.Services.Identity.Repository;
-using ProEvent.Services.Core.Interfaces.IRepository;
-using ProEvent.Services.Core.Interfaces.IService;
 using Microsoft.Extensions.Options;
+using ProEvent.Domain.Models;
+using ProEvent.DAL.Data;
+using ProEvent.Domain.Validators;
+using ProEvent.BLL.Services;
+using ProEvent.DAL.Repository;
+using ProEvent.BLL;
+using ProEvent.BLL.DTOs;
+using ProEvent.DAL.Interfaces.IRepository;
+using ProEvent.BLL.Interfaces.IService;
+using ProEvent.Domain.Enums;
 
 namespace WebApp
 {

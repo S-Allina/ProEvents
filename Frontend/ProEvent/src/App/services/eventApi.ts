@@ -24,6 +24,7 @@ interface EventFilterParams {
   location?: string;
   category?: string;
   name?: string;
+  isPassed: boolean;
 }
 
 const baseQuery = fetchBaseQuery({

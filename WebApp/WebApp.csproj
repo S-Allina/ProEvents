@@ -9,25 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProEvent.Services.Core\ProEvent.Services.Core.csproj" />
-    <ProjectReference Include="..\ProEvent.Services.Identity\ProEvent.Services.Identity.csproj" />
-    <ProjectReference Include="..\ProEvent.Services.Infrastructure\ProEvent.Services.Infrastructure.csproj" />
+    <ProjectReference Include="..\ProEvent.BLL\ProEvent.BLL.csproj" />
   </ItemGroup>
 
 

@@ -3,7 +3,7 @@ import Button from '../../../Components/Button/Button';
 import ProfileImg from '/img/ProfileImg.png';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import styled from 'styled-components';
 import { Alert, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -56,7 +56,7 @@ const Profile = () => {
     };
 
     try {
-      const response= await updateParticipant(updatedParticipant).unwrap();
+      const response = await updateParticipant(updatedParticipant).unwrap();
       if (!response.isSuccess) {
         const { displayMessage, errorMessages } = response;
         const combinedErrors = errorMessages.join(', ');
@@ -106,11 +106,11 @@ const Profile = () => {
       <div className="content">
         <StyledFormControl className="text" onSubmit={(e) => e.preventDefault()}>
           <h2>Профиль {originalFirstName}</h2>
-           {AddEditError && (
-                      <Alert severity="error" sx={{ marginBottom: 2 }}>
-                        {AddEditError}
-                      </Alert>
-                    )}
+          {AddEditError && (
+            <Alert severity="error" sx={{ marginBottom: 2 }}>
+              {AddEditError}
+            </Alert>
+          )}
           <TextField
             label="Имя"
             variant="outlined"
@@ -135,7 +135,7 @@ const Profile = () => {
             required
             disabled={!isEditing}
           />
-          <DateTimePicker
+          <DatePicker
             label="Дата рождения"
             value={dateOfBirth}
             onChange={(newDate) => setDateOfBirth(newDate)}

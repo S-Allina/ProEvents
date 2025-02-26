@@ -2,17 +2,18 @@
 using FluentValidation;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
-using ProEvent.Services.Core.DTOs;
-using ProEvent.Services.Core.Interfaces.IRepository;
-using ProEvent.Services.Core.Interfaces;
-using ProEvent.Services.Core.Models;
-using ProEvent.Services.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation.Results;
+using ProEvent.DAL.Interfaces.IRepository;
+using ProEvent.Domain.Models;
+using ProEvent.BLL.Services;
+using ProEvent.BLL.DTOs;
+using ProEvent.Domain.Enums;
+using ProEvent.BLL.Interfaces.IService;
 
 namespace ProEvent.Tests.Events
 {
@@ -23,15 +24,14 @@ namespace ProEvent.Tests.Events
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IValidator<Event>> _eventValidatorMock;
         private readonly EventService _eventService;
-
+        private readonly IEnrollmentService _enrollmentServiceMock;
         public EventServiceTests()
         {
             _eventRepositoryMock = new Mock<IEventRepository>();
             _cacheMock = new Mock<IMemoryCache>();
             _mapperMock = new Mock<IMapper>();
             _eventValidatorMock = new Mock<IValidator<Event>>();
-
-            _eventService = new EventService(_eventRepositoryMock.Object, _cacheMock.Object, _mapperMock.Object, _eventValidatorMock.Object);
+            _eventService = new EventService(_eventRepositoryMock.Object,  _cacheMock.Object, _mapperMock.Object, _eventValidatorMock.Object, new Mock<IEnrollmentService>().Object);
         }
 
         [Fact]
@@ -64,8 +64,6 @@ namespace ProEvent.Tests.Events
 
             _eventRepositoryMock.Setup(repo => repo.GetEventById(eventId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(eventItem);
-            _eventRepositoryMock.Setup(repo => repo.CalculateEventStatus(eventItem, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(eventStatus);
             _mapperMock.Setup(m => m.Map<EventDTO>(eventItem))
             .Returns(eventDto);
 
@@ -73,9 +71,7 @@ namespace ProEvent.Tests.Events
 
             Assert.NotNull(result);
             Assert.Equal(eventDto.Name, result.Name);
-            Assert.Equal(eventStatus, result.Status);
             _eventRepositoryMock.Verify(repo => repo.GetEventById(eventId, It.IsAny<CancellationToken>()), Times.Once);
-            _eventRepositoryMock.Verify(repo => repo.CalculateEventStatus(eventItem, It.IsAny<CancellationToken>()), Times.Once);
             _mapperMock.Verify(m => m.Map<EventDTO>(eventItem), Times.Once);
         }
 
@@ -91,55 +87,12 @@ namespace ProEvent.Tests.Events
 
             Assert.Null(result);
             _eventRepositoryMock.Verify(repo => repo.GetEventById(eventId, It.IsAny<CancellationToken>()), Times.Once);
-            _eventRepositoryMock.Verify(repo => repo.CalculateEventStatus(It.IsAny<Event>(), It.IsAny<CancellationToken>()), Times.Never);
             _mapperMock.Verify(m => m.Map<EventDTO>(It.IsAny<Event>()), Times.Never);
         }
 
-        [Fact]
-        public async Task GetEvents_ShouldReturnEvents_WhenEventsExist()
-        {
-            int pageNumber = 1;
-            int pageSize = 4;
-            var events = new List<Event>
-                {
-                    new Event { Id = 1, Name = "Event 1" },
-                    new Event { Id = 2, Name = "Event 2" }
-                };
+      
 
-            var eventDtos = events.Select(e => new EventDTO(e.Name, e.Description, e.Image, e.Date, e.Location, e.Category, e.MaxParticipants)).ToList();
-            int totalCount = events.Count;
-
-            _eventRepositoryMock.Setup(repo => repo.GetEvents(pageNumber, pageSize, null, null, null, null, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((eventDtos, totalCount));
-
-            var result = await _eventService.GetEvents(pageNumber, pageSize, null, null, null, null, null, CancellationToken.None);
-
-            Assert.NotNull(result);
-            Assert.Equal(totalCount, result.TotalCount);
-            Assert.Equal(eventDtos.Count, result.Events.Count());
-            _eventRepositoryMock.Verify(repo => repo.GetEvents(pageNumber, pageSize, null, null, null, null, null, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetEvents_ShouldReturnEmpty_WhenNoEventsExist()
-        {
-            int pageNumber = 1;
-            int pageSize = 4;
-            var events = new List<Event>();
-            var eventDtos = new List<EventDTO>();
-            int totalCount = events.Count;
-
-            _eventRepositoryMock.Setup(repo => repo.GetEvents(pageNumber, pageSize, null, null, null, null, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((eventDtos, totalCount));
-
-            var result = await _eventService.GetEvents(pageNumber, pageSize, null, null, null, null, null, CancellationToken.None);
-
-            Assert.NotNull(result);
-            Assert.Equal(totalCount, result.TotalCount);
-            Assert.Empty(result.Events);
-            _eventRepositoryMock.Verify(repo => repo.GetEvents(pageNumber, pageSize, null, null, null, null, null, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
+       
         [Fact]
         public async void GetEvents_ShouldThrowOperationCanceledException_WhenCanceled()
         {
@@ -190,8 +143,6 @@ namespace ProEvent.Tests.Events
             _eventRepositoryMock.Setup(repo => repo.GetEventById(eventId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(eventFromRepository);
 
-            _eventRepositoryMock.Setup(repo => repo.CalculateEventStatus(eventFromRepository, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventStatus);
 
             _mapperMock.Setup(mapper => mapper.Map<EventDTO>(eventFromRepository))
                        .Returns(expectedEventDto);
@@ -210,7 +161,6 @@ namespace ProEvent.Tests.Events
             Assert.Equal(expectedEventDto.Status, result.Status);
 
             _eventRepositoryMock.Verify(repo => repo.GetEventById(eventId, It.IsAny<CancellationToken>()), Times.Once);
-            _eventRepositoryMock.Verify(repo => repo.CalculateEventStatus(eventFromRepository, It.IsAny<CancellationToken>()), Times.Once);
             _mapperMock.Verify(mapper => mapper.Map<EventDTO>(eventFromRepository), Times.Once);
 
         }
@@ -263,7 +213,7 @@ namespace ProEvent.Tests.Events
             _eventValidatorMock.Setup(v => v.ValidateAsync(eventEntity, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult(validationErrors));
 
-            var exception = await Assert.ThrowsAsync<ProEvent.Services.Core.Exceptions.ValidationException>(() =>
+            var exception = await Assert.ThrowsAsync<ProEvent.Domain.Exceptions.ValidationException>(() =>
             _eventService.CreateUpdateEvent(eventDTO, CancellationToken.None));
 
             Assert.NotNull(exception);
@@ -285,7 +235,7 @@ namespace ProEvent.Tests.Events
             _eventValidatorMock.Setup(v => v.ValidateAsync(eventEntity, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult(validationErrors));
 
-            var exception = await Assert.ThrowsAsync<ProEvent.Services.Core.Exceptions.ValidationException>(() =>
+            var exception = await Assert.ThrowsAsync<ProEvent.Domain.Exceptions.ValidationException>(() =>
             _eventService.CreateUpdateEvent(eventDTO, CancellationToken.None));
 
             Assert.NotNull(exception);

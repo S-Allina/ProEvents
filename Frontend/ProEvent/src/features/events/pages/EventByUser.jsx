@@ -78,12 +78,12 @@ const EventByUser = () => {
 
   const handleDelete = async (enrollmentId) => {
     try {
-    const result=  await deleteEvent(enrollmentId);
-    if(result){
-      setSnackbarMessage(result.displayMessage);
-      setSnackbarSeverity('success');
-      refetch();
-}
+      const result = await deleteEvent(enrollmentId);
+      if (result) {
+        setSnackbarMessage(result.displayMessage);
+        setSnackbarSeverity('success');
+        refetch();
+      }
     } catch (error) {
       setSnackbarMessage('При отмене произошла ошибка' + error.message);
       setSnackbarSeverity('error');

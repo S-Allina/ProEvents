@@ -1,4 +1,4 @@
-import { TextField, MenuItem } from '@mui/material';
+import { TextField, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import Button from '../../../Components/Button/Button';
 import FormControl from '@mui/material/FormControl';
 
@@ -21,6 +21,7 @@ const EventFilter = ({ onFilterChange }) => {
   const [category, setCategory] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [isPassed, setIsPassed] = useState(false);
 
   const handleLocationChange = (event) => {
     setLocation(event.target.value);
@@ -37,7 +38,9 @@ const EventFilter = ({ onFilterChange }) => {
   const handleEndDateChange = (date) => {
     setEndDate(date);
   };
-
+  const handlePassedChange = (event) => {
+    setIsPassed(event.target.checked);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -57,6 +60,7 @@ const EventFilter = ({ onFilterChange }) => {
     if (endDate) {
       filters.endDate = endDate.toISOString();
     }
+    filters.isPassed = isPassed;
 
     console.log('Filters object:', filters);
     onFilterChange(filters);
@@ -67,12 +71,19 @@ const EventFilter = ({ onFilterChange }) => {
     setCategory('');
     setStartDate(null);
     setEndDate(null);
+    setIsPassed(false);
     onFilterChange({});
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <StyledFormControl onSubmit={handleSubmit}>
+        <FormControlLabel
+          onChange={handlePassedChange}
+          checked={isPassed}
+          control={<Checkbox defaultChecked />}
+          label="Показать прошедшие"
+        />
         <TextField
           fullWidth
           sx={{ m: 0, maxWidth: 180, minWidth: 170 }}

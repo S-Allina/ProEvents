@@ -2,12 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProEvent.Services.Core.DTOs;
-using ProEvent.Services.Core.Interfaces.IService;
-using ProEvent.Services.Core.Models;
-using ProEvent.Services.Core.Validators;
-using ProEvent.Services.Infrastructure.Repository;
-using ProEvents.Service.Core.DTOs;
+using ProEvent.BLL.DTOs;
+using ProEvent.BLL.Interfaces.IService;
 using System.Security.Claims;
 
 namespace ProEvent.WebApp.Controllers

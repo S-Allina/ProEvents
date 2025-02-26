@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using ProEvent.Services.Core.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -37,7 +36,7 @@ namespace WebApp.Middleware
 
             switch (exception)
             {
-                case ProEvent.Services.Core.Exceptions.ValidationException validationException:
+                case ProEvent.Domain.Exceptions.ValidationException validationException:
                     status = HttpStatusCode.BadRequest;
                     message = "Ошибка валидации.";
                     errors = validationException.Errors;
