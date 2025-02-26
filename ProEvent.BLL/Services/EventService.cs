@@ -80,7 +80,7 @@ namespace ProEvent.BLL.Services
                 {
                     eventDTO.Status = await CalculateEventStatus(eventDTO, cancellationToken);
                 }
-                
+                if(!isPassed) eventDTOs=eventDTOs.Where(e=>e.Status!= EventStatus.Passed).ToList();
             }
             return (eventDTOs, events.TotalCount);
         }

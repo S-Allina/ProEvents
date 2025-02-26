@@ -130,7 +130,7 @@ namespace ProEvent.DAL.Repository
             {
                 query = query.Where(e => e.Name.Contains(name));
             }
-            if (!isPassed) query = query.Where(e => e.Date > DateTime.Now);
+            if (!isPassed) query = query.Where(e => e.Date >= DateTime.Now);
             int totalCount =  query.Count();
 
             List<Event> events =  query.OrderBy(e => e.Date)
